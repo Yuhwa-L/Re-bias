@@ -3,11 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Video Script Bias Analyzer</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 2rem;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            height: 250px;
+            box-sizing: border-box; /* Include padding/border in width */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        button:hover:not(:disabled) {
+            background-color: #0056b3;
+        }
+        #result-container {
+            margin-top: 2rem;
+            border-top: 2px solid #eee;
+            padding-top: 1.5rem;
+            display: none; /* Hidden initially */
+        }
+        #result-container h2 {
+            margin: 0 0 1rem 0;
+        }
+        #percentage {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        #reasoning {
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            padding: 1rem;
+            border-radius: 4px;
+            line-height: 1.6;
+        }
+        #loader {
+            text-align: center;
+            font-size: 1.2rem;
+            color: #555;
+            display: none; /* Hidden initially */
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello</h1>
-    <h2>EE</h2>
-    <footer>HHHH</footer>
+
+    <div class="container">
+        <h1>🎥 Video Script Bias Analyzer</h1>
+        <p>Paste the script (or subtitles) of the video you want to analyze below.</p>
+
+        <textarea id="script-input" placeholder="Paste your script here..."></textarea>
+        
+        <button id="analyze-button">Start Analysis</button>
+
+        <div id="loader">Analyzing... (This may take up to a minute)</div>
+
+        <div id="result-container">
+            <h2>Analysis Result</h2>
+            
+            <div id="percentage">0%</div>
+            
+            <h3>Reasoning:</h3>
+            <div id="reasoning"></div>
+        </div>
+    </div>
+
+    <script>
+        // Select HTML elements
+        const analyzeButton = document.getElementById('analyze-button');
+        const scriptInput = document.getElementById('script-input');
+        const resultContainer = document.getElementById('result-container');
+        const percentageDiv = document.getElementById('percentage');
+        const reasoningDiv = document.getElementById('reasoning');
+        const loader = document.getElementById('loader');
+
+        // Button click event handler
+        analyzeButton.addEventListener('click', async () => {
+            const scriptText = scriptInput.value;
+
+            if (scriptText.trim().length === 0) {
+                alert('Please enter or paste a script.');
+                return;
+            }
+
+            // Show loading state
+            analyzeButton.disabled = true;
+            analyzeButton.innerText = 'Analyzing...';
+            loader.style.display = 'block';
+            resultContainer.style.display = 'none';
+
+            try {
+                // Send script to backend (/analyze) as a POST request
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ script: scriptText }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.statusText}`);
+                }
+
+                // Parse JSON response from backend
+                const data = await response.json();
+
+                // Display results
+                percentageDiv.innerText = `${data.biasPercentage}%`;
+                reasoningDiv.innerText = data.reasoning;
+                resultContainer.style.display = 'block';
+
+            } catch (error) {
+                console.error('Analysis failed:', error);
+                alert('Failed to analyze. Please try again later.');
+            } finally {
+                // Reset UI state
+                analyzeButton.disabled = false;
+                analyzeButton.innerText = 'Start Analysis';
+                loader.style.display = 'none';
+            }
+        });
+    </script>
+
 </body>
 </html>
