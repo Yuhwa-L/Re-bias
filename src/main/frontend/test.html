@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<title>Re-Bias Shorts – Mixed Sources</title>
+<style>
+    
+  :root{
+    --bg:#0b0d12; --fg:#e8ebf2; --muted:#9aa3b2;
+    --brand:#3b82f6; --green:#22c55e; --yellow:#f59e0b; --red:#ef4444;
+    --bubbleH: 132px;
+    --railW: 393px;
+    --railH: 852px;
+  }
+  *{box-sizing:border-box}
+  html,body{
+    margin:0;padding:0;background:var(--bg);color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif;
+    height:100%;
+  }
+  .stage{min-height:100vh; display:grid; place-items:center; padding:14px}
+
+  /* iPhone frame */
+  .iphone{
+    width:min(var(--railW), 92vw);
+    height:calc(min(var(--railW), 92vw) * (var(--railH)/var(--railW)));
+    max-height:92vh;
+    position:relative; overflow:hidden;
+    border-radius:42px; background:#000;
+    box-shadow:0 22px 60px rgba(0,0,0,.55),
+               0 0 0 12px rgba(255,255,255,.06) inset,
+               0 0 0 1px rgba(255,255,255,.1) inset;
+    background-image: radial-gradient(120% 120% at -10% -10%, #303749 0%, #0b0d12 50%);
+  }
+  .island{
+    position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    width:126px; height:36px; background:#0a0a0a; border-radius:18px;
+    box-shadow:0 4px 18px rgba(0,0,0,.5),
+               0 0 0 1px rgba(255,255,255,.08) inset;
+    z-index:6;
+  }
+
+ .swipe-layer{
+  position:absolute;
+  left:0;
+  right:0;
+  height:30%;         
+  z-index:2;           
+  background:transparent;
+}
+.swipe-layer.top{
+  top:0;
+}
+
+.swipe-layer.bottom{
+  bottom:0;
+}
+
+.short-embed iframe{
+  width:100%;
+  height:100%;
+  border:0;
+  display:block;
+  position:relative;
+  z-index:1;
+}
+
+  /* Summary bubble (safe transition with max-height) */
+  .summary-wrap{
+    position:absolute; top:58px; left:10px; right:10px; margin:auto; max-width:92%;
+    z-index:6; pointer-events:none; /* 닫혔을 때 터치 방해 X */
+  }
+  .summary-bubble{
+    max-height:0; opacity:0; overflow:hidden;
+    transition:max-height .25s ease, opacity .2s ease;
+    pointer-events:auto; /* 열릴 때만 클릭 가능 */
+  }
+  .summary-bubble.open{
+  max-height: var(--targetH, 40vh);
+  opacity: 1;
+}
+.bubble-card{
+  background:linear-gradient(180deg,#151922,#0f131a);
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;
+  padding:6px 12px 2px;   /* was 10px 12px → less vertical space */
+  position:relative;
+  overflow:auto;
+  line-height:1.45;       /* slightly denser text */
+  white-space:pre-wrap;
+  max-height:40vh;
+}
+
+  .bubble-arrow{
+    position:absolute; top:-9px; left:22px; width:16px; height:16px;
+    background:linear-gradient(180deg,#151922,#0f131a);
+    border-left:1px solid rgba(255,255,255,.12);
+    border-top:1px solid rgba(255,255,255,.12);
+    transform:rotate(45deg);
+  }
+  .bubble-head{ display:flex; align-items:left; justify-content:space-between; gap:1px; margin-bottom:0px; font-weight:800; transform: translateY(-40px); }
+  .bubble-close{ background:rgba(255,255,255,.08); color:#fff;
+    border:1px solid rgba(255,255,255,.16); padding:6px 10px; border-radius:10px; cursor:pointer }
+  .bubble-body{ color:#e8eaf1; font-size:.95rem; transform: translateY(-60px);}
+
+  /* rail */
+  .rail{
+    position:absolute; inset:0; display:grid; place-items:center; overflow:hidden;
+  }
+  .slides{
+    position:relative; width:100%; height:100%;
+  }
+  .iphone.bubble-open .slides{
+    padding-top:calc(var(--bubbleH) + 14px);
+    transition:padding-top .22s ease;
+  }
+
+  .short-slide{
+    position:absolute; inset:0; display:grid; place-items:center;
+    opacity:0; transform:translateY(40px) scale(.985);
+    pointer-events:none;
+    transition:opacity .22s ease, transform .22s ease;
+  }
+  .short-slide.active{
+    opacity:1; transform:translateY(0) scale(1); pointer-events:auto;
+  }
+
+  .short-video-wrapper{
+    position:relative; width:100%; height:100%; background:#000;
+    overflow:hidden;
+  }
+
+  /* mp4 */
+  video.short-video{
+    width:100%; height:100%; object-fit:cover; display:block;
+  }
+
+  /* TikTok / IG embed */
+  .short-embed{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    overflow:hidden;
+  }
+  .short-embed iframe{
+    width:100%; height:100%; border:0; display:block;
+  }
+
+  /* bias banner */
+  .bias-banner{
+    position:absolute; top:18px; left:14px;
+    display:inline-flex; align-items:center; gap:10px;
+    padding:8px 12px; border-radius:24px;
+    background:rgba(15,19,26,.72);
+    color:#fff; font-weight:800;
+    border:1px solid rgba(255,255,255,.09);
+    cursor:pointer; user-select:none; z-index:4;
+  }
+  .bias-dot{
+    width:10px; height:10px; border-radius:50%;
+    background:var(--brand);
+    box-shadow:0 0 0 3px rgba(59,130,246,.18);
+  }
+  .bias-score{ letter-spacing:.3px }
+
+  .slides.swiping .short-slide.active{
+    transform:translateY(var(--swipeY,0px)) scale(.985);
+  }
+
+  .hint{
+    position:absolute; bottom:12px; left:0; right:0; margin:auto;
+    width:max-content; padding:5px 8px; border-radius:10px;
+    color:#fff; background:rgba(0,0,0,.35);
+    font-size:.8rem; z-index:3;
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="iphone" id="iphone">
+      <div class="island"></div>
+
+      <!-- Bubble wrapper (kept above video) -->
+      <div class="summary-wrap">
+        <div class="summary-bubble" id="summaryBubble" aria-live="polite">
+          <div class="bubble-card">
+            <div class="bubble-arrow" aria-hidden="true"></div>
+            <div class="bubble-head">
+              <div>AI Analysis Summary</div>
+              <button class="bubble-close" id="bubbleClose" type="button">Close</button>
+            </div>
+            <div class="bubble-body" id="bubbleBody">No summary yet.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- rail -->
+      <div class="rail">
+        <div class="slides" id="slides">
+
+          <!-- 1) MP4 #1 -->
+          <section
+            class="short-slide active"
+            data-index="0"
+            data-kind="mp4"
+            data-script="/scripts/1.txt"
+          >
+            <div class="short-video-wrapper">
+              <video class="short-video"
+                     src="/video/1.mp4"
+                     playsinline
+                     autoplay
+                     muted
+                     loop></video>
+              <button class="bias-banner" type="button">
+                <span class="bias-dot" aria-hidden="true"></span>
+                <span class="bias-score">--%</span>
+              </button>
+              <div class="hint">Swipe ↑ / ↓</div>
+            </div>
+          </section>
+
+          <!-- 2) MP4 #2 -->
+          <section
+            class="short-slide"
+            data-index="1"
+            data-kind="mp4"
+            data-script="/scripts/2.txt"
+          >
+            <div class="short-video-wrapper">
+              <video class="short-video"
+                     src="/video/2.mp4"
+                     playsinline
+                     muted
+                     loop></video>
+              <button class="bias-banner" type="button">
+                <span class="bias-dot" aria-hidden="true"></span>
+                <span class="bias-score">--%</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- 3) TikTok #1 -->
+            <section
+            class="short-slide"
+            data-index="2"
+            data-kind="tiktok"
+            data-url="https://www.tiktok.com/@msnbc/video/7553347425633619255"
+            data-script="/scripts/3.txt"
+            >
+            <div class="short-video-wrapper">
+                <div class="short-embed"></div>
+
+                <div class="swipe-layer top"></div>
+
+                <div class="swipe-layer bottom"></div>
+
+                <button class="bias-banner" type="button">
+                <span class="bias-dot" aria-hidden="true"></span>
+                <span class="bias-score">--%</span>
+                </button>
+            </div>
+            </section>
+
+          <!-- 4) TikTok #2 (예: 다른 링크로 바꿔) -->
+          <section
+            class="short-slide"
+            data-index="3"
+            data-kind="tiktok"
+            data-url="https://www.tiktok.com/@whateverpod/video/7413045509247520042"
+            data-script="/scripts/4.txt"
+          >
+            <div class="short-video-wrapper">
+              <div class="short-embed"></div>
+                <div class="swipe-layer top"></div>
+
+                <div class="swipe-layer bottom"></div>
+              <button class="bias-banner" type="button">
+                <span class="bias-dot" aria-hidden="true"></span>
+                <span class="bias-score">--%</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- 5) Instagram Reels #1 -->
+          <section
+            class="short-slide"
+            data-index="4"
+            data-kind="instagram"
+            data-url="https://www.instagram.com/p/C-n-aEJRJES/"
+            data-script="/scripts/5.txt"
+          >
+            <div class="short-video-wrapper">
+              <div class="short-embed"></div>
+              <div class="swipe-layer top"></div>
+
+                <div class="swipe-layer bottom"></div>
+              <button class="bias-banner" type="button">
+                <span class="bias-dot" aria-hidden="true"></span>
+                <span class="bias-score">--%</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- 6) Instagram Reels #2 (다른 인스타 링크로 교체) -->
+          <section
+            class="short-slide"
+            data-index="5"
+            data-kind="instagram"
+            data-url="https://www.instagram.com/p/DOvX1ePCPMo/"
+            data-script="/scripts/6.txt"
+          >
+            <div class="short-video-wrapper">
+              <div class="short-embed"></div>
+              <div class="swipe-layer top"></div>
+
+                 <div class="swipe-layer bottom"></div>
+              <button class="bias-banner" type="button">
+                <span class="bias-dot" aria-hidden="true"></span>
+                <span class="bias-score">--%</span>
+              </button>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ========== core refs ========== */
+const phone = document.getElementById('iphone');
+const slidesRoot = document.getElementById('slides');
+const slides = Array.from(document.querySelectorAll('.short-slide'));
+let currentIndex = 0;
+
+/* ========== slide control ========== */
+function updateActiveSlide(){
+  slides.forEach((s,i)=>{
+    s.classList.toggle('active', i===currentIndex);
+    const v = s.querySelector('video.short-video');
+    if(!v) return;
+    if(i===currentIndex){ v.play().catch(()=>{}); }
+    else { v.pause(); v.currentTime = 0; }
+  });
+}
+function goTo(index){
+  const next = Math.max(0, Math.min(index, slides.length-1));
+  if(next===currentIndex) return;
+  currentIndex = next;
+  updateActiveSlide();
+  analyzeForSlide(currentIndex).catch(()=>{});
+}
+
+/* ========== AI 분석 ========== */
+const ANALYZE_ENDPOINT = '/analyze';
+const analyzedCache = new Map();
+const analyzingInFlight = new Map();
+
+const bubble = document.getElementById('summaryBubble');
+const bubbleBody = document.getElementById('bubbleBody');
+const bubbleClose = document.getElementById('bubbleClose');
+
+function openBubbleVerbatim(text){
+  bubbleBody.textContent = typeof text === 'string' ? text : String(text ?? '');
+  bubble.classList.add('open');
+  phone.classList.add('bubble-open');
+}
+function closeBubble(){
+  bubble.classList.remove('open');
+  phone.classList.remove('bubble-open');
+}
+bubbleClose.addEventListener('click', closeBubble);
+
+function extractReason(obj){
+  if (obj && typeof obj === 'object') {
+    if ('reasoning' in obj) return obj.reasoning;
+    if ('analysis' in obj)  return obj.analysis;
+    if ('reason' in obj)    return obj.reason;
+  }
+  if (typeof obj === 'string') return obj;
+  return '';
+}
+
+async function fetchText(url){
+  const r = await fetch(url, { cache:'no-store' });
+  if(!r.ok) throw new Error(`Failed to load: ${r.status} ${r.statusText}`);
+  return r.text();
+}
+async function callAnalyze(script){
+  const r = await fetch(ANALYZE_ENDPOINT,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({ script })
+  });
+  if(!r.ok) throw new Error(`Analyze API error: ${r.status} ${r.statusText}`);
+  return r.json();
+}
+
+function paintBanner(slideIndex, bias){
+  const slide = slides[slideIndex];
+  const scoreEl = slide.querySelector('.bias-score');
+  const dot = slide.querySelector('.bias-dot');
+  const val = Math.round(Number(bias||0));
+  scoreEl.textContent = `${val}%`;
+  let c = 'var(--green)';
+  if(val>=70) c='var(--red)';
+  else if(val>=35) c='var(--yellow)';
+  dot.style.background = c;
+  dot.style.boxShadow = `0 0 0 3px ${c}22`;
+}
+
+async function analyzeForSlide(slideIndex){
+  if (analyzedCache.has(slideIndex)) {
+    const cached = analyzedCache.get(slideIndex);
+    paintBanner(slideIndex, cached.biasPercentage);
+    return cached;
+  }
+  if (analyzingInFlight.has(slideIndex)) {
+    return analyzingInFlight.get(slideIndex);
+  }
+
+  const slide = slides[slideIndex];
+  const scriptUrl = slide?.dataset?.script;
+  const scoreEl = slide?.querySelector?.('.bias-score');
+  if (scoreEl && scoreEl.textContent === '--%') scoreEl.textContent = '…';
+
+  const p = (async () => {
+    try{
+      const script = scriptUrl ? await fetchText(scriptUrl) : '';
+      const data = await callAnalyze(script);
+      const bias = Number(data?.biasPercentage ?? 0);
+      const reason = extractReason(data);
+      const result = { biasPercentage:bias, reasoning:reason };
+      analyzedCache.set(slideIndex, result);
+      paintBanner(slideIndex, bias);
+      return result;
+    }catch(err){
+      console.error('Analysis failed:', err);
+      if (scoreEl) scoreEl.textContent = 'ERR';
+      const fallback = { biasPercentage:0, reasoning:'Failed to analyze.' };
+      analyzedCache.set(slideIndex, fallback);
+      return fallback;
+    }finally{
+      analyzingInFlight.delete(slideIndex);
+    }
+  })();
+
+  analyzingInFlight.set(slideIndex, p);
+  return p;
+}
+
+function wireBannerClicks(){
+  document.querySelectorAll('.bias-banner').forEach((btn)=>{
+    btn.addEventListener('click', async ()=>{
+      openBubbleVerbatim('Analyzing with AI…');
+      const res = await analyzeForSlide(currentIndex);
+      openBubbleVerbatim(res.reasoning);
+    });
+  });
+}
+
+/* ========== TikTok / Instagram embed 설정 ========== */
+// replace this function
+function extractTikTokEmbedSrc(url){
+  const m = url.match(/video\/(\d+)/);
+  if (m && m[1]) {
+    // force autoplay (muted) + hide controls for a Shorts-like feel
+    return `https://www.tiktok.com/embed/v2/${m[1]}?autoplay=1&muted=1&controls=0`;
+  }
+  return url;
+}
+
+function extractInstagramEmbedSrc(url){
+  const m = url.match(/\/reel[s]?\/([^\/\?\&]+)/) || url.match(/\/p\/([^\/\?\&]+)/);
+  if(m && m[1]){
+    return `https://www.instagram.com/reel/${m[1]}/embed`;
+  }
+  return url.endsWith('/') ? url + 'embed' : url + '/embed';
+}
+function setupEmbeds(){
+  slides.forEach(slide=>{
+    const kind = slide.dataset.kind;
+    const url  = slide.dataset.url;
+    const container = slide.querySelector('.short-embed');
+    if(!kind || !url || !container) return;
+
+    let embedSrc = '';
+    if(kind === 'tiktok'){
+      embedSrc = extractTikTokEmbedSrc(url);
+    }else if(kind === 'instagram'){
+      embedSrc = extractInstagramEmbedSrc(url);
+    }else{
+      return;
+    }
+
+    const iframe = document.createElement('iframe');
+    iframe.src = embedSrc;
+
+    // ★ important: allow autoplay FIRST so browsers honor it
+    iframe.setAttribute(
+      'allow',
+      'autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share'
+    );
+    iframe.setAttribute('allowfullscreen', 'true');
+    iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    iframe.setAttribute('loading', 'lazy');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = '0';
+
+    container.appendChild(iframe);
+  });
+}
+
+
+/* ========== swipe ========== */
+let dragStartY=0, dragging=false, lastY=0, lastT=0, velocityY=0;
+const DIST_THRESHOLD = 68;
+const VELOCITY_THRESHOLD = 0.6;
+
+function startDrag(y){
+  dragStartY = y; lastY = y; lastT = performance.now(); velocityY = 0; dragging = true;
+  slidesRoot.classList.add('swiping');
+  slidesRoot.style.setProperty('--swipeY','0px');
+}
+function moveDrag(y){
+  if(!dragging) return;
+  const now = performance.now();
+  const dy = y - dragStartY;
+  slidesRoot.style.setProperty('--swipeY', `${dy}px`);
+  const dt = now - lastT;
+  if(dt>0){
+    velocityY = (y - lastY) / dt;
+    lastY = y; lastT = now;
+  }
+}
+function endDrag(y){
+  if(!dragging) return;
+  dragging = false;
+  const dy = y - dragStartY;
+  slidesRoot.classList.remove('swiping');
+  slidesRoot.style.setProperty('--swipeY','0px');
+
+  const isFlick = Math.abs(velocityY) > VELOCITY_THRESHOLD;
+  const enoughDist = Math.abs(dy) > DIST_THRESHOLD;
+  if(!(isFlick || enoughDist)) return;
+
+  if(dy < 0) goTo(currentIndex + 1);
+  else       goTo(currentIndex - 1);
+}
+
+/* touch */
+slidesRoot.addEventListener('touchstart', (e)=>{
+  if(!e.touches || e.touches.length!==1) return;
+  startDrag(e.touches[0].clientY);
+},{ passive:true });
+slidesRoot.addEventListener('touchmove', (e)=>{
+  if(!e.touches || e.touches.length!==1) return;
+  moveDrag(e.touches[0].clientY);
+},{ passive:true });
+slidesRoot.addEventListener('touchend', (e)=>{
+  const y = (e.changedTouches && e.changedTouches[0]?.clientY) || dragStartY;
+  endDrag(y);
+},{ passive:true });
+
+/* mouse/pen */
+slidesRoot.addEventListener('pointerdown', (e)=>{
+  if(e.pointerType==='mouse' || e.pointerType==='pen'){
+    startDrag(e.clientY);
+  }
+});
+window.addEventListener('pointermove', (e)=>{
+  if(dragging) moveDrag(e.clientY);
+});
+window.addEventListener('pointerup', (e)=>{
+  if(dragging) endDrag(e.clientY);
+});
+
+/* ========== init ========== */
+window.addEventListener('load', ()=>{
+  setupEmbeds();          // TikTok / Insta iframe 세팅
+  updateActiveSlide();    // 첫 슬라이드 활성화 + mp4 재생
+  wireBannerClicks();     // 배너 클릭 → 분석 + 말풍선
+  analyzeForSlide(currentIndex).catch(()=>{}); // 첫 슬라이드 bias 미리 계산
+});
+
+/* ====== AUDIO CONTROL HELPERS ====== */
+function getActiveSlide(){
+  return slides[currentIndex];
+}
+function isMP4Slide(slide){
+  return slide?.dataset?.kind === 'mp4';
+}
+function isTikTokSlide(slide){
+  return slide?.dataset?.kind === 'tiktok';
+}
+function isInstagramSlide(slide){
+  return slide?.dataset?.kind === 'instagram';
+}
+
+/* MP4 mute/unmute */
+function setMP4Muted(slide, muted){
+  const v = slide?.querySelector('video.short-video');
+  if(!v) return;
+  v.muted = !!muted;
+  if(!muted){
+    // iOS는 유저 제스처 후 play 필요
+    v.play().catch(()=>{ /* ignore */ });
+  }
+}
+
+/* TikTok mute/unmute: iframe src 파라미터로 제어 */
+function setTikTokMuted(slide, muted){
+  const iframe = slide?.querySelector('.short-embed iframe');
+  if(!iframe) return;
+  try{
+    const u = new URL(iframe.src);
+    if(muted){
+      u.searchParams.set('muted','1');
+    }else{
+      u.searchParams.set('muted','0');
+      u.searchParams.set('autoplay','1'); // 유저 클릭 이후에는 사운드 포함 자동재생 가능
+    }
+    // 동일값이면 reload 회피
+    if(iframe.src !== u.toString()){
+      iframe.src = u.toString();
+    }
+  }catch(e){}
+}
+
+/* Instagram 강제 음소거/언뮤트 (언로드/재로딩) */
+function setInstagramMuted(slide, muted){
+  const container = slide?.querySelector('.short-embed');
+  if(!container) return;
+
+  let iframe = container.querySelector('iframe');
+
+  if(muted){
+    // 소리 끄기: 현재 재생 중 임베드를 완전히 언로드
+    if(iframe){
+      // about:blank으로 바꿔서 오디오 즉시 정지
+      iframe.src = 'about:blank';
+    }
+    return;
+  }
+
+  // 소리 켜기: 원래 임베드 src로 재로딩 (유저 제스처 이후 허용)
+  const base = slide.dataset.embedSrc || extractInstagramEmbedSrc(slide.dataset.url || '');
+  if(!base) return;
+
+  // 없으면 새로 만들고, 있으면 URL만 업데이트
+  if(!iframe){
+    iframe = document.createElement('iframe');
+    iframe.setAttribute(
+      'allow',
+      'autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share'
+    );
+    iframe.setAttribute('allowfullscreen', 'true');
+    iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    iframe.setAttribute('loading', 'lazy');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = '0';
+    container.appendChild(iframe);
+  }
+
+  try{
+    const u = new URL(base);
+    // 클릭 제스처 이후에는 autoplay 힌트를 다시 줘서 소리 포함 재생을 유도
+    u.searchParams.set('autoplay','1');
+    if(iframe.src !== u.toString()){
+      iframe.src = u.toString();
+    }
+  }catch(e){
+    // URL 파싱 실패 시 기본값 사용
+    iframe.src = base;
+  }
+}
+
+
+/* 모든 슬라이드 일괄 mute */
+function muteAllExcept(indexKeep){
+  slides.forEach((s,i)=>{
+    const keep = (i === indexKeep);
+    if(isMP4Slide(s)) setMP4Muted(s, !keep);
+    if(isTikTokSlide(s)) setTikTokMuted(s, !keep);
+    if(isInstagramSlide(s)) setInstagramMuted(s, !keep); // 인스타도 시도는 하지만 mute 강제 불가
+  });
+}
+
+/* 현재 슬라이드 오디오 켜기 */
+function unmuteCurrentSlide(){
+  const slide = getActiveSlide();
+  if(!slide) return;
+  if(isMP4Slide(slide)) setMP4Muted(slide, false);
+  if(isTikTokSlide(slide)) setTikTokMuted(slide, false);
+  if(isInstagramSlide(slide)) setInstagramMuted(slide, false);
+}
+
+/* 현재 슬라이드 오디오 끄기 */
+function muteCurrentSlide(){
+  const slide = getActiveSlide();
+  if(!slide) return;
+  if(isMP4Slide(slide)) setMP4Muted(slide, true);
+  if(isTikTokSlide(slide)) setTikTokMuted(slide, true);
+  if(isInstagramSlide(slide)) setInstagramMuted(slide, true);
+}
+
+
+function updateActiveSlide(){
+  slides.forEach((s,i)=>{
+    s.classList.toggle('active', i===currentIndex);
+    const v = s.querySelector('video.short-video');
+    if(!v) return;
+    if(i===currentIndex){
+      // 초기엔 muted 상태 유지, 사용자 클릭 때만 unmute
+      v.play().catch(()=>{});
+    }else{
+      v.pause();
+      v.currentTime = 0;
+    }
+  });
+  // 활성 슬라이드 빼고 모두 mute
+  muteAllExcept(currentIndex);
+}
+
+
+function goTo(index){
+  const next = Math.max(0, Math.min(index, slides.length-1));
+  if(next===currentIndex) return;
+  currentIndex = next;
+  updateActiveSlide();
+  analyzeForSlide(currentIndex).catch(()=>{});
+  // 안전망
+  muteAllExcept(currentIndex);
+}
+
+/* ====== GLOBAL TAP TO UNMUTE CURRENT ====== */
+slidesRoot.addEventListener('click', (e)=>{
+  // 스와이프 제스처 후 click 버블링이 들어올 수 있어 약간의 필터
+  if(dragging) return;
+  unmuteCurrentSlide();
+}, { capture:false });
+
+</script>
+</body>
+</html>  
