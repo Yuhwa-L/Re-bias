@@ -1,0 +1,673 @@
+/* 🌟 폰트 수정: 둥글둥글한 느낌의 'Quicksand' 폰트 임포트 🌟 */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+/* Font Awesome 아이콘 라이브러리 추가 */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
+/* 폰트 설정 및 배경 */
+body {
+    font-family: 'Quicksand', sans-serif; 
+    /* 배경색 변경 */
+    background-color: #B6CCD7; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* 폰 프레임 (아이폰 그리드 사이즈) */
+.phone-frame {
+    width: 375px; 
+    height: 812px; 
+    /* 배경색 변경 */
+    background-color: #B6CCD7; 
+    border-radius: 40px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    overflow: hidden; 
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* -------------------- 공통 스타일 (헤더, 내비게이션, 버튼) -------------------- */
+header {
+    /* 배경색 변경 */
+    background-color: #B6CCD7; 
+    padding: 10px 20px; 
+    display: flex;
+    justify-content: space-between; 
+    align-items: center; 
+    position: relative;
+    height: 40px; 
+    padding-top: 15px; 
+}
+
+.notch { display: none; } 
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px; 
+    z-index: 11;
+}
+
+.time { 
+    font-size: 18px; 
+    font-weight: 500; 
+    /* 최종 수정 반영: 시간을 총 4px 위로 이동 */
+    margin-top: -4px; 
+}
+
+.bias-percentage-box {
+    /* 🌟 수정: 기본적으로 숨김 처리 🌟 */
+    display: none;
+
+    color: black; 
+    border: 1px solid black; 
+    padding-top: 5px;    
+    padding-bottom: 5px; 
+    padding-left: 2px;    
+    padding-right: 2px;   
+    border-radius: 5px; 
+    font-size: 11px; 
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px; 
+    /* 수정: 편향도 박스를 위로 3px 이동 */
+    margin-top: -3px; 
+}
+
+.status-bar {
+    display: flex;
+    align-items: center; 
+    gap: 10px; 
+    font-size: 16px; 
+    z-index: 11;
+    color: #333; 
+    transform: translateX(-15px); 
+}
+.status-bar .fas {
+    font-size: 18px; 
+    margin-left: 0; 
+}
+
+
+.app-container {
+    flex-grow: 1;
+    overflow: hidden; 
+    position: relative;
+    /* 배경색 변경 */
+    background-color: #B6CCD7; 
+}
+
+.app-page {
+    width: 100%;
+    height: 100%;
+    padding: 0 20px;
+    box-sizing: border-box;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out;
+    overflow-y: hidden; 
+}
+
+.app-page.active {
+    opacity: 1;
+    visibility: visible;
+    position: relative;
+}
+
+.page-title {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 5px;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+}
+.page-header .page-title { margin: 0; }
+.page-header .menu-icon, .page-header .back-icon { 
+    font-size: 20px; 
+    cursor: pointer; 
+}
+
+/* 🌟 핵심 스타일: 중앙 정렬 및 타이틀 역할 수행 (CLEANING, HISTORY 페이지용) 🌟 */
+.page-title-spacer {
+    /* 텍스트 스타일 */
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    /* Flex 아이템 속성 */
+    flex-grow: 1; /* 남은 공간을 채워 좌우 아이콘을 밀어냄 */
+    margin: 0 10px; /* 좌우 아이콘과의 간격 */
+}
+
+.notification-icon {
+    font-size: 18px;
+    position: relative;
+    cursor: pointer; 
+}
+.notification-icon .dot {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    width: 15px;
+    height: 15px;
+    font-size: 10px;
+    line-height: 15px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.next-btn, .primary-btn {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 30px;
+    background-color: white;
+    font-size: 16px;
+    font-weight: bold;
+    color: #1a73e8;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.secondary-btn {
+    background: none;
+    border: none;
+    color: #555;
+    margin-top: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.bottom-nav {
+    display: flex;
+    justify-content: center; 
+    /* 배경색 변경 */
+    background-color: #B6CCD7; 
+    padding: 15px 0 30px 0; 
+    border-top: none; 
+}
+/* 하단 내비게이션 아이템 간격 및 활성화 스타일 변경 */
+.bottom-nav .nav-item {
+    color: #888; 
+    font-size: 20px;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px; 
+    height: 50px;
+    border-radius: 50%;
+    /* 🌟 내비게이션 아이템 간격 수정 🌟 */
+    margin: 0 10px; 
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.bottom-nav .nav-item.active {
+    background-color: #1a73e8; 
+    color: white; 
+}
+
+/* -------------------- G. SETTINGS PAGE 스타일 -------------------- */
+.settings-page {
+    padding-top: 5px;
+    overflow-y: hidden; 
+}
+.settings-content {
+    margin-top: 10px; 
+    /* 배경색 변경 */
+    background-color: #B6CCD7;
+}
+.setting-group-title {
+    font-size: 11px;
+    font-weight: bold;
+    color: #555;
+    margin: 15px 10px 5px;
+    padding-left: 5px;
+    border-bottom: 1px solid #cce;
+}
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
+    border-bottom: 1px solid #cce; 
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    transition: background-color 0.2s;
+}
+.setting-item:hover {
+    background-color: #e0f2ff;
+}
+.setting-item:last-child {
+    border-bottom: none;
+}
+.setting-label {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+.setting-label i { 
+    margin-right: 10px;
+    width: 20px;
+    text-align: center;
+    color: #555;
+}
+.setting-action {
+    color: #777;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+/* A. 스플래시 스타일 */
+.splash-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.splash-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding-bottom: 50px; 
+}
+/* 🌟 최종 수정 반영: 스플래시 페이지 h1 글씨색을 흰색으로 변경 🌟 */
+.splash-page h1 { font-size: 24px; font-weight: bold; color: white; margin-bottom: 5px; }
+/* 🌟 최종 수정 반영: 스플래시 페이지 h2 글씨색을 흰색으로 변경 🌟 */
+.splash-page h2 { font-size: 16px; font-weight: normal; color: white; margin-bottom: 30px; }
+
+.dot-indicators { 
+    /* 최종 수정 반영: 페이지 인디케이터 중앙 정렬 */
+    display: flex;
+    justify-content: center;
+    margin: 0 auto 30px; 
+}
+.dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin: 0 4px;
+}
+.dot.active { background-color: #1a73e8; }
+.splash-page .next-btn { width: 60%; }
+
+/* B. ACCESS 스타일 */
+.access-page {
+    padding-top: 40px;
+}
+.access-list {
+    margin-top: 40px;
+}
+.access-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #cce;
+}
+.access-item:last-child { border-bottom: none; }
+.access-item .icon-text { font-size: 16px; font-weight: 500; }
+.access-item .fab { font-size: 20px; margin-right: 10px; width: 25px; text-align: center; }
+
+/* Switch Toggle (토글 버튼 스타일) */
+.switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #ccc; transition: .4s;
+}
+.slider:before {
+  position: absolute; content: ""; height: 16px; width: 16px; left: 2px; bottom: 2px;
+  background-color: white; transition: .4s;
+}
+input:checked + .slider { background-color: #1a73e8; }
+input:checked + .slider:before { transform: translateX(20px); }
+.slider.round { border-radius: 20px; }
+.slider.round:before { border-radius: 50%; }
+.access-page .bottom-dots { margin-top: 50px; }
+
+/* C. NOTIFICATION SETTING 스타일 */
+.notification-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-bottom: 0; 
+}
+.notification-content {
+    margin-bottom: 20px; 
+}
+.icon-circle {
+    background-color: white;
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.icon-circle .fas { font-size: 30px; color: #1a73e8; }
+.notification-page h3 { font-size: 20px; margin-bottom: 10px; }
+.notification-page p { color: #555; font-size: 13px; }
+
+
+/* D. VIDEO LIST 스타일 */
+.video-list-page {
+    overflow-y: auto; 
+}
+.video-list-content {
+    padding-top: 5px; 
+    padding-bottom: 100px; 
+}
+.video-item {
+    display: flex;
+    /* 수정: 세로 중앙 정렬 */
+    align-items: center; 
+    padding: 15px 0;
+    /* 수정: 구분선 색깔 변경 (세련되게) */
+    border-bottom: 1px solid #C5D9E5; 
+    cursor: pointer;
+}
+.video-item img {
+    width: 100px;
+    height: 70px;
+    object-fit: cover;
+    /* 수정: 모서리 둥글게 처리 */
+    border-radius: 10px;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+.video-item .info {
+    flex-grow: 1;
+}
+.video-item .title {
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: #333;
+    margin-bottom: 5px;
+}
+.video-item .views {
+    font-size: 12px;
+    color: #777;
+}
+.video-item .bias-score {
+    /* 수정: 폰트 크기 조정 (중앙 정렬과 조화) */
+    font-size: 16px; 
+    font-weight: bold;
+    margin-left: 10px;
+    flex-shrink: 0;
+}
+
+
+/* E. NOTIFICATION LIST 스타일 */
+.notification-list-page {
+    padding-top: 5px;
+    /* 배경색 변경 */
+    background-color: #B6CCD7; 
+    overflow-y: auto; 
+}
+.notification-list {
+    margin-top: 10px;
+}
+.notification-item {
+    display: flex;
+    padding: 15px 10px;
+    border-bottom: 1px solid #B6CCD7; 
+    align-items: center;
+    cursor: pointer;
+    /* 배경색 변경 */
+    background-color: #B6CCD7; 
+    transition: background-color 0.2s;
+}
+.notification-item.unread {
+    /* 읽지 않은 항목 배경색은 유지 또는 조정 가능 (여기서는 약간 더 밝은 색으로 유지) */
+    background-color: #cce7ff; 
+}
+.notification-item:hover {
+    background-color: #e0f2ff; 
+}
+.notification-item:last-child {
+    border-bottom: none;
+}
+.notification-item .icon {
+    font-size: 20px;
+    color: #1a73e8;
+    margin-right: 15px;
+    flex-shrink: 0;
+    width: 25px;
+    text-align: center;
+}
+.notification-item .content {
+    flex-grow: 1;
+}
+.notification-item .title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 3px;
+    color: #333;
+}
+.notification-item .detail-text {
+    font-size: 12px;
+    color: #777;
+}
+
+/* -------------------- H. HISTORY PAGE 스타일 -------------------- */
+.history-page {
+    overflow-y: auto;
+    padding-top: 5px;
+}
+
+.history-content {
+    padding-top: 10px;
+    padding-bottom: 100px; /* 하단바를 위한 여백 */
+}
+
+.history-box {
+    background-color: white; /* 박스 배경색은 흰색 유지 (이미지가 배경을 가림) */
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.analytical-box {
+    text-align: center;
+    /* 🌟 추가/수정: Analytical 박스 안쪽 여백 조정 (이미지에 맞춰서) 🌟 */
+    padding-top: 20px; 
+    padding-bottom: 5px; 
+}
+.app-label {
+    text-align: left;
+    /* 🌟 수정: 폰트 사이즈 키우고, 볼드하게 🌟 */
+    font-size: 16px; 
+    font-weight: bold; 
+    color: #333;
+    margin-bottom: 10px;
+    /* 🌟 추가: 왼쪽 아이콘과 텍스트 간격 조정 🌟 */
+    display: flex;
+    align-items: center;
+    padding-left: 5px; /* 박스 왼쪽 여백 조정 */
+}
+.app-label .fab {
+    font-size: 22px; /* 유튜브 아이콘 크기 키움 */
+    margin-right: 8px;
+}
+.app-label .app-note {
+    font-size: 12px; /* APP NOTE 크기 키움 */
+    color: #777;
+    margin-left: 5px;
+    font-weight: normal; /* 볼드 해제 */
+}
+.history-graph {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    /* 🌟 수정: 그래프와 버튼 사이 간격 조정 🌟 */
+    margin-bottom: 10px; 
+    /* 이미지 자체에 배경이 있으므로 투명도 없이 선명하게 표시 */
+    opacity: 1; 
+    /* 🌟 추가: 이미지 위 아래 여백 조정 🌟 */
+    margin-top: 10px; 
+}
+
+.time-filter-buttons {
+    margin-top: 10px; /* 🌟 수정: 그래프 아래 버튼 그룹 간격 조정 🌟 */
+    display: flex;
+    justify-content: center;
+    gap: 8px; /* 버튼 간격 조정 */
+}
+.time-filter-buttons button {
+    background-color: #f0f0f0;
+    color: #555;
+    border: none;
+    padding: 8px 12px;
+    margin: 0; /* flex gap으로 간격 조정되므로 margin 0으로 설정 */
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    min-width: 50px; /* 버튼 최소 너비 설정 (이미지 참고) */
+}
+.time-filter-buttons button.active {
+    background-color: #6C63FF; /* 🌟 이미지와 동일한 보라색 계열로 변경 🌟 */
+    color: white;
+}
+.time-filter-buttons button:hover {
+    background-color: #ddd;
+}
+.time-filter-buttons button.active:hover {
+    background-color: #5a54d6; /* 활성 버튼 호버 색상 */
+}
+
+
+.summary-box h3, .neutral-idea-box h3 {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+.summary-box p, .neutral-idea-box p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+    margin: 0;
+}
+/* 박스 색상 지정 (이미지 5 참고) */
+/* 🌟 수정: blue-bg, pink-bg 색상 이미지와 유사하게 조정 🌟 */
+.blue-bg { background-color: #E6F7FF; border-left: 5px solid #0096C7; } /* 좀 더 밝은 파랑 */
+.pink-bg { background-color: #FFF0F5; border-left: 5px solid #FF6B81; } /* 좀 더 밝은 핑크 */
+
+
+/* -------------------- I. CLEANING PAGE 스타일 -------------------- */
+.cleaning-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    /* padding-top: 5px; <- 통일성을 위해 제거됨 (page-header가 padding을 가짐) */
+}
+.cleaning-content {
+    max-width: 300px;
+    margin-top: 20px;
+}
+.cleaning-icon-circle {
+    background-color: white;
+    border-radius: 50%;
+    width: 100px; 
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 30px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+/* 🌟 수정: 붓 아이콘 스타일 🌟 */
+.cleaning-icon-circle .fas.fa-brush {
+    font-size: 50px; 
+    color: #1a73e8; 
+}
+
+.cleaning-page h3 {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+.cleaning-description {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 40px;
+}
+.clean-btn {
+    background-color: #1a73e8;
+    color: white;
+}
+
+
+/* -------------------- J. VIDEO PAGE (Full Screen) 스타일 -------------------- */
+.video-page {
+    padding: 0; /* 전체 화면 사용 */
+    background-color: black; /* 영상 플레이어 배경색 */
+    display: flex;
+    flex-direction: column;
+}
+.video-page .page-header {
+    background-color: transparent;
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    padding: 10px 20px;
+    color: white; /* 헤더 아이콘 흰색 */
+}
+.video-page .back-icon, .video-page .menu-icon {
+    color: white;
+    /* 아이콘을 좀 더 눈에 띄게 그림자 추가 */
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); 
+}
+.video-player-content {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+.video-player-content .full-width-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}

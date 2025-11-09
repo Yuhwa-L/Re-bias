@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Re-Bias App</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+</head>
+<body>
+    <div class="phone-frame">
+        <header>
+            
+            <div class="header-left">
+                <div class="time" id="current-time">--:--</div>
+                <div class="bias-percentage-box" id="bias-indicator"> 
+                    <span id="bias-percentage">--%</span>
+                </div>
+            </div>
+            
+            <div class="notch" style="display: none;"></div> 
+            
+            <div class="status-bar">
+                <span><i class="fas fa-wifi"></i></span>
+                <span><i class="fas fa-battery-three-quarters"></i></span>
+            </div>
+        </header>
+
+        <div class="app-container">
+            
+            <section class="app-page splash-page active" data-page="splash">
+                <div class="splash-content">
+                    <h1>Re-think. Re-focus. Re-Bias</h1>
+                    <h2>Let's see beyond bias <i class="fas fa-globe-americas"></i></h2>
+                    <div class="dot-indicators">
+                        <span class="dot active"></span>
+                        <span class="dot"></span>
+                        <span class="dot"></span>
+                    </div>
+                    <button class="next-btn" onclick="goToPage('access')">Next</button>
+                </div>
+            </section>
+
+            <section class="app-page access-page" data-page="access">
+                <h2 class="page-title">Access</h2>
+                <div class="access-list">
+                    <div class="access-item">
+                        <div class="icon-text"><i class="fab fa-youtube" style="color: red;"></i> Youtube</div>
+                        <label class="switch"><input type="checkbox" checked><span class="slider round"></span></label>
+                    </div>
+                    <div class="access-item">
+                        <div class="icon-text"><i class="fab fa-instagram" style="color: #E1306C;"></i> Instagram</div>
+                        <label class="switch"><input type="checkbox"><span class="slider round"></span></label>
+                    </div>
+                    <div class="access-item">
+                        <div class="icon-text"><i class="fab fa-google" style="color: #4285F4;"></i> Google</div>
+                        <label class="switch"><input type="checkbox" checked><span class="slider round"></span></label>
+                    </div>
+                    <div class="access-item">
+                        <div class="icon-text"><i class="fab fa-facebook" style="color: #4267B2;"></i> Facebook</div>
+                        <label class="switch"><input type="checkbox"><span class="slider round"></span></label>
+                    </div>
+                </div>
+                <div class="dot-indicators bottom-dots">
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                </div>
+                <button class="next-btn" onclick="goToPage('notification')">Next</button>
+            </section>
+
+            <section class="app-page notification-page" data-page="notification">
+                <div class="notification-content">
+                    <div class="icon-circle"><i class="fas fa-bell"></i></div>
+                    <h3>Allow notifications</h3>
+                    <p>We'll let you know when you get message.</p>
+                </div>
+                <div class="dot-indicators bottom-dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot active"></span>
+                </div>
+                <button class="primary-btn" onclick="goToPage('video-list')">Allow notifications</button>
+                <button class="secondary-btn" onclick="goToPage('video-list')">Not now</button>
+            </section>
+
+            <section class="app-page video-list-page" data-page="video-list">
+                <div class="page-header">
+                    <i class="fas fa-bars menu-icon" onclick="goToPage('settings')"></i>
+                    <h2 class="page-title">Re-Bias</h2>
+                    <div class="notification-icon" onclick="goToPage('notification-list')">
+                        <span class="dot" id="notification-count">2</span>
+                        <i class="fas fa-bell"></i>
+                    </div>
+                </div>
+                
+                <div class="video-list-content">
+                    <div class="video-item" onclick="openVideoPage('video/video_content.html', '51%')">
+                        <img src="https://via.placeholder.com/100x70/FFFFFF/FFFFFF?text=White+Placeholder" alt="Thumbnail">
+                        <div class="info">
+                            <div class="title">A future Beyond Capitalism? Socialism Explained.</div>
+                            <div class="views">Views: 1.78M</div>
+                        </div>
+                        <div class="bias-score" style="color: #1a73e8;">51%</div>
+                    </div>
+                    
+                    <div class="video-item" onclick="openVideoPage('video/video_content.html', '82%')">
+                        <img src="https://via.placeholder.com/100x70/FFFFFF/FFFFFF?text=White+Placeholder" alt="Thumbnail">
+                        <div class="info">
+                            <div class="title">Why Trump's tariff chaos actually makes sense(big picture)</div>
+                            <div class="views">Views: 5.06M</div>
+                        </div>
+                        <div class="bias-score" style="color: red;">82%</div>
+                    </div>
+                    
+                    <div class="video-item" onclick="openVideoPage('video/video_content.html', '57%')">
+                        <img src="https://via.placeholder.com/100x70/FFFFFF/FFFFFF?text=White+Placeholder" alt="Thumbnail">
+                        <div class="info">
+                            <div class="title">Is There a Better Economic System Than Capitalism?</div>
+                            <div class="views">Views: 2.13M</div>
+                        </div>
+                        <div class="bias-score" style="color: #4CAF50;">57%</div>
+                    </div>
+                    
+                    <div class="video-item" onclick="openVideoPage('video/video_content.html', '68%')">
+                        <img src="https://via.placeholder.com/100x70/FFFFFF/FFFFFF?text=White+Placeholder" alt="Thumbnail">
+                        <div class="info">
+                            <div class="title">Male inequality, explained by an expert | Richard Reeves</div>
+                            <div class="views">Views: 7.16M</div>
+                        </div>
+                        <div class="bias-score" style="color: red;">68%</div>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="app-page notification-list-page" data-page="notification-list">
+                <div class="page-header">
+                    <i class="fas fa-arrow-left back-icon" onclick="goToPage('video-list')"></i>
+                    <h2 class="page-title">Notifications</h2>
+                    <div class="notification-icon" style="visibility: hidden;">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                </div>
+                
+                <div class="notification-list" id="notification-list-container">
+                    </div>
+            </section>
+            
+            <section class="app-page settings-page" data-page="settings">
+                <div class="page-header">
+                    <i class="fas fa-times menu-icon" onclick="goToPage('video-list')"></i>
+                    <h2 class="page-title">Settings</h2>
+                    <div class="notification-icon" style="visibility: hidden;">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                </div>
+                
+                <div class="settings-content">
+                    
+                    <div class="setting-group-title">ACCOUNT & PERSONALIZATION</div>
+                    <div class="setting-item" onclick="handleAccountAction('profile')">
+                        <div class="setting-label"><i class="fas fa-user-circle"></i> Account Profile / Management</div>
+                        <div class="setting-action"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+                    <div class="setting-item" onclick="handleAccountAction('linked')">
+                        <div class="setting-label"><i class="fas fa-link"></i> Linked Accounts</div>
+                        <div class="setting-action"><i class="fas fa-chevron-right"></i></div>
+                    </div>
+                    
+                    <div class="setting-group-title"></div>
+                    <div class="setting-item" style="color: red;" onclick="handleAccountAction('logout')">
+                        <div class="setting-label"><i class="fas fa-sign-out-alt"></i> Log out</div>
+                        <div class="setting-action"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="app-page history-page" data-page="history">
+                <div class="page-header">
+                    <i class="fas fa-arrow-left back-icon" onclick="goToPage('video-list')"></i>
+                    <div class="page-title-spacer">HISTORY</div>
+                    <div class="notification-icon" onclick="goToPage('notification-list')">
+                        <span class="dot" id="notification-count-history">1</span>
+                        <i class="fas fa-bell"></i>
+                    </div>
+                </div>
+                <div class="history-content">
+                    <div class="analytical-box history-box">
+                        <div class="app-label"><i class="fab fa-youtube" style="color: red;"></i> Analytical <span class="app-note">YOUTUBE APP</span></div>
+                        
+<img src="image_54091a.png" alt="Bias Trend Graph" class="history-graph"> 
+                        <div class="time-filter-buttons">
+                            <button>24H</button>
+                            <button>3D</button>
+                            <button class="active">1W</button>
+                            <button>3M</button>
+                            <button>1M</button>
+                        </div>
+                    </div>
+
+                    <div class="summary-box history-box blue-bg">
+                        <h3>Summary</h3>
+                        <p>Our AI agent analyzes each video's transcript, title, and description to detect stance and sentiment. It tracks how language and tone align with left- or right-wing narratives, showing their weekly balance as the bias curve.</p>
+                    </div>
+
+                    <div class="neutral-idea-box history-box pink-bg">
+                        <h3>AI's Neutral Idea</h3>
+                        <p>Trump's corporate tax cuts boosted business investment but also widened income gaps. A neutral view weighs both growth benefits and fiscal consequences.</p>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="app-page cleaning-page" data-page="cleaning">
+                <div class="page-header">
+                    <i class="fas fa-arrow-left back-icon" onclick="goToPage('video-list')"></i>
+                    <div class="page-title-spacer">CLEANING</div>
+                    <div class="notification-icon" onclick="goToPage('notification-list')">
+                        <span class="dot" id="notification-count-cleaning">1</span>
+                        <i class="fas fa-bell"></i>
+                    </div>
+                </div>
+                <div class="cleaning-content">
+                    <div class="icon-circle cleaning-icon-circle">
+                         
+<i class="fas fa-brush"></i>
+                    </div>
+                    
+                    <h3>Algorithm Cleaning</h3>
+                    <p class="cleaning-description">
+                        Our AI is optimizing your content feed by removing biased or repetitive patterns. 
+                        This helps your recommendation system stay balanced and fresh.
+                    </p>
+                    
+                    <button class="primary-btn clean-btn">Clean Algorithm Now</button>
+                </div>
+            </section>
+            
+            <section class="app-page video-page" data-page="video-content">
+                <div class="page-header video-page-header">
+                    <i class="fas fa-arrow-left back-icon" onclick="goToPage('video-list')"></i>
+                    <h2 class="page-title" style="visibility: hidden;">Video</h2>
+                    <i class="fas fa-search menu-icon"></i>
+                </div>
+                <div class="video-player-content">
+                    <img src="KakaoTalk_20251108_103938405.jpg" alt="Video Player Screenshot" class="full-width-image">
+                    
+                    </div>
+                </section>
+
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" data-nav-target="video-list" onclick="goToPage('video-list')"><i class="fas fa-home"></i></a>
+            <a href="#" class="nav-item" data-nav-target="history" onclick="goToPage('history')"><i class="fas fa-chart-line"></i></a>
+            <a href="#" class="nav-item" data-nav-target="cleaning" onclick="goToPage('cleaning')"><i class="fas fa-broom"></i></a>
+            <a href="#" class="nav-item" data-nav-target="settings" onclick="goToPage('settings')"><i class="fas fa-cog"></i></a>
+        </nav>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
