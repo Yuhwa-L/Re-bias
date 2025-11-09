@@ -1,447 +1,351 @@
+<!-- youtubeShorts.html -->
 <!DOCTYPE html>
-<html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Re-Bias Shorts Demo</title>
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<title>Shorts – Bias Analyzer (iPhone 14 Pro Frame)</title>
+<style>
+  :root{
+    --bg:#0b0d12; --fg:#e8ebf2; --muted:#9aa3b2;
+    --brand:#3b82f6; --green:#22c55e; --yellow:#f59e0b; --red:#ef4444;
+    --bubbleH: 132px;       /* speech bubble height */
+    --railW: 393px;         /* iPhone 14 Pro width */
+    --railH: 852px;         /* iPhone 14 Pro height */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,Helvetica,Arial,sans-serif; height:100%}
+  .stage{min-height:100vh; display:grid; place-items:center; padding:14px}
 
-      html,
-      body {
-        height: 100%;
-        background: #000;
-        color: #f9fafb;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-          sans-serif;
-        overflow: hidden; /* Disable full page scroll */
-      }
+  /* ===== iPhone 14 Pro frame ===== */
+  .iphone{
+    width:min(var(--railW), 92vw);
+    height:calc(min(var(--railW), 92vw) * (var(--railH)/var(--railW)));
+    max-height:92vh;
+    position:relative; overflow:hidden;
+    border-radius:42px; background:#000;
+    box-shadow:0 22px 60px rgba(0,0,0,.55), 0 0 0 12px rgba(255,255,255,.06) inset, 0 0 0 1px rgba(255,255,255,.1) inset;
+    background-image: radial-gradient(120% 120% at -10% -10%, #303749 0%, #0b0d12 50%);
+  }
+  .island{
+    position:absolute; top:10px; left:50%; transform:translateX(-50%);
+    width:126px; height:36px; background:#0a0a0a; border-radius:18px;
+    box-shadow:0 4px 18px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.08) inset;
+    z-index:6;
+  }
 
-      /* 🔲 iPhone-like screen frame (position fully fixed) */
-      .shorts-frame {
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: min(100vw, 430px); /* Approx. iPhone width */
-        height: 100vh; /* Full device height */
-        background: #000;
-        overflow: hidden;
-      }
+  /* ===== speech bubble ===== */
+  .summary-bubble{
+    position:absolute; top:58px; left:10px; right:10px; margin:auto;
+    max-width:92%; height:0; opacity:0; pointer-events:none;
+    transition:height .22s ease, opacity .18s ease; z-index:5;
+  }
+  .summary-bubble.open{ height:var(--bubbleH); opacity:1; pointer-events:auto; }
+  .bubble-card{
+    height:100%; background:linear-gradient(180deg,#151922,#0f131a);
+    border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:10px 12px;
+    position:relative; overflow:auto; line-height:1.55; white-space:pre-wrap;
+  }
+  .bubble-arrow{
+    position:absolute; top:-9px; left:22px; width:16px; height:16px;
+    background:linear-gradient(180deg,#151922,#0f131a);
+    border-left:1px solid rgba(255,255,255,.12);
+    border-top:1px solid rgba(255,255,255,.12);
+    transform:rotate(45deg);
+  }
+  .bubble-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; font-weight:800 }
+  .bubble-close{ background:rgba(255,255,255,.08); color:#fff;
+    border:1px solid rgba(255,255,255,.16); padding:6px 10px; border-radius:10px; cursor:pointer }
+  .bubble-body{ color:#e8eaf1; font-size:.95rem; }
 
-      .shorts-track {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        transition: transform 0.35s ease-out;
-      }
+  /* ===== rail ===== */
+  .rail{ position:absolute; inset:0; display:grid; place-items:center; overflow:hidden }
+  .slides{ position:relative; width:100%; height:100%; }
+  .iphone.bubble-open .slides{ padding-top:calc(var(--bubbleH) + 14px); transition:padding-top .22s ease; }
 
-      /* Each slide is one full screen inside the frame */
-      .short-slide {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        display: flex;             /* 🔥 Split into top/bottom regions using flex */
-        flex-direction: column;
-      }
+  .short-slide{
+    position:absolute; inset:0; display:grid; place-items:center;
+    opacity:0; transform:translateY(40px) scale(.985); pointer-events:none;
+    transition:opacity .22s ease, transform .22s ease;
+  }
+  .short-slide.active{ opacity:1; transform:translateY(0) scale(1); pointer-events:auto }
 
-      /* Top: summary region (initially 0% height) */
-      .summary-region {
-        flex: 0 0 0%;              /* 🔥 Start at 0% (hidden) */
-        max-height: 0;
-        overflow: hidden;
-        transition: flex-basis 0.25s ease-out, max-height 0.25s ease-out;
-        background: transparent;
-      }
+  .short-video-wrapper{ position:relative; width:100%; height:100%; background:#000; }
+  video.short-video{ width:100%; height:100%; object-fit:cover; display:block }
 
-      /* Bottom: video region (initially 100%) */
-      .video-region {
-        flex: 1 1 auto;           /* 🔥 Initially video takes full height */
-        position: relative;
-        overflow: hidden;
-        background: #000;
-        transition: flex-basis 0.25s ease-out;
-      }
+  /* percent banner */
+  .bias-banner{
+    position:absolute; top:18px; left:14px; display:inline-flex; align-items:center; gap:10px;
+    padding:8px 12px; border-radius:24px; background:rgba(15,19,26,.72);
+    color:#fff; font-weight:800; border:1px solid rgba(255,255,255,.09); cursor:pointer; user-select:none; z-index:4;
+  }
+  .bias-dot{ width:10px; height:10px; border-radius:50%; background:var(--brand); box-shadow:0 0 0 3px rgba(59,130,246,.18)}
+  .bias-score{ letter-spacing:.3px }
 
-      /* ✅ When summary is open:
-         - summary-region becomes 50%
-         - video-region becomes 50% */
-      .short-slide.summary-open .summary-region {
-        flex: 0 0 50%;            /* 🔧 Top 50% */
-        max-height: 50%;
-      }
+  /* swipe feedback */
+  .slides.swiping .short-slide.active{ transform:translateY(var(--swipeY,0px)) scale(.985) }
 
-      .short-slide.summary-open .video-region {
-        flex: 0 0 50%;            /* 🔧 Bottom 50% */
-      }
+  .hint{ position:absolute; bottom:12px; left:0; right:0; margin:auto; width:max-content; padding:5px 8px; border-radius:10px;
+    color:#fff; background:rgba(0,0,0,.35); font-size:.8rem; z-index:3 }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="iphone" id="iphone">
+      <div class="island"></div>
 
-      /* Actual summary box (fills summary-region) */
-      .summary-sheet {
-        height: 100%;
-        background: rgba(15, 23, 42, 0.97);
-        border-radius: 0 0 18px 18px;
-        padding: 12px 16px 18px;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .summary-handle {
-        width: 40px;
-        height: 4px;
-        border-radius: 999px;
-        background: #4b5563;
-        margin: 4px auto 12px;
-      }
-
-      .summary-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 6px;
-        gap: 8px;
-      }
-
-      .summary-title {
-        font-size: 12px;
-        font-weight: 600;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: #9ca3af;
-      }
-
-      .summary-close {
-        border: none;
-        border-radius: 999px;
-        padding: 4px 10px;
-        font-size: 11px;
-        cursor: pointer;
-        background: #111827;
-        color: #e5e7eb;
-      }
-
-      .summary-body {
-        font-size: 13px;
-        line-height: 1.5;
-        white-space: pre-line;
-        color: #e5e7eb;
-        margin-top: 6px;
-        flex: 1 1 auto;
-        overflow-y: auto;
-      }
-
-      /* Video wrapper always lives inside video-region */
-      .short-video-wrapper {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: transform 0.25s ease-out;
-        transform-origin: center center;
-        background: #000;
-      }
-
-      video.short-video {
-        max-width: 100%;
-        max-height: 100%;
-        object-fit: cover;
-        background: #000;
-      }
-
-      .overlay-top-gradient {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 20%;
-        background: linear-gradient(
-          to bottom,
-          rgba(0, 0, 0, 0.6),
-          transparent
-        );
-        pointer-events: none;
-      }
-
-      /* ✅ Bias banner: fixed inside video region only */
-      .bias-banner {
-        position: absolute;
-        top: 8%;
-        left: 6%;
-        border: none;
-        border-radius: 999px;
-        padding: 6px 12px;
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(17, 24, 39, 0.9);
-        color: #f9fafb;
-        cursor: pointer;
-        font-size: 12px;
-        pointer-events: auto;
-        z-index: 6;
-      }
-
-      .bias-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 999px;
-        background: #f97316;
-      }
-
-      .bias-score {
-        font-weight: 600;
-      }
-
-      /* ✅ Only the video scales (summary stays fixed)
-         - When summary is open, video inside bottom 50% shrinks slightly */
-      .short-slide.summary-open .short-video-wrapper {
-        /* 🔧 Video size/position:
-           - scale(0.9): almost full / 0.8: more padding
-           - translateY(5%): slight downward shift within bottom region */
-        transform: scale(0.9) translateY(5%);
-      }
-
-      .sound-hint {
-        position: absolute;
-        bottom: 6%;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 6px 12px;
-        border-radius: 999px;
-        font-size: 12px;
-        background: rgba(0, 0, 0, 0.65);
-        color: #f9fafb;
-        z-index: 10;
-      }
-      .sound-hint.hidden {
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.25s ease-out;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- 🔲 Frame: fully fixed position, only inner layout changes -->
-    <div class="shorts-frame">
-      <div class="shorts-track" id="shortsTrack">
-        <!-- Slide 1 -->
-        <section class="short-slide" data-index="0">
-          <!-- Top region: summary (0% at first, 50% when summary-open) -->
-          <div class="summary-region">
-            <div class="summary-sheet">
-              <div class="summary-handle"></div>
-              <div class="summary-header">
-                <div class="summary-title">AI Neutral Summary</div>
-                <button class="summary-close" type="button">Close</button>
-              </div>
-              <div class="summary-body">
-This video strongly supports a particular political group and policy,
-while barely addressing data and arguments from the opposing side.
-
-According to AI analysis,
-- It uses framing that portrays the opposing side as emotional or irrational,
-- And over-attributes the problem's cause to a single group.
-
-From a more balanced perspective,
-- You’d review both the benefits and the costs/side effects of the policy, and
-- Consider economic, safety, and human-rights concerns raised by other groups.
-              </div>
-            </div>
+      <!-- bubble -->
+      <div class="summary-bubble" id="summaryBubble" aria-live="polite">
+        <div class="bubble-card">
+          <div class="bubble-arrow" aria-hidden="true"></div>
+          <div class="bubble-head">
+            <div>AI Analysis Summary</div>
+            <button class="bubble-close" id="bubbleClose" type="button">Close</button>
           </div>
-
-          <!-- Bottom region: video -->
-          <div class="video-region">
-            <div class="short-video-wrapper">
-              <video
-                class="short-video"
-                src="../video/1.mp4"
-                playsinline
-                autoplay
-                muted
-                loop
-              ></video>
-
-              <div class="overlay-top-gradient"></div>
-
-              <button class="bias-banner">
-                <span class="bias-dot"></span>
-                <span class="bias-score">72%</span>
-              </button>
-            </div>
-          </div>
-        </section>
-
-        <!-- Slide 2 -->
-        <section class="short-slide" data-index="1">
-          <div class="summary-region">
-            <div class="summary-sheet">
-              <div class="summary-handle"></div>
-              <div class="summary-header">
-                <div class="summary-title">AI Neutral Summary</div>
-                <button class="summary-close" type="button">Close</button>
-              </div>
-              <div class="summary-body">
-This video focuses on one main perspective,
-but briefly acknowledges concerns and limitations of the opposing view.
-
-AI analysis suggests that:
-- The evidence presented mostly aligns with real data, but
-- It doesn’t fully cover costs, implementation difficulty, or long-term impact.
-
-For balanced understanding,
-you’d want to compare multiple data sources and the opposing side’s reasoning.
-              </div>
-            </div>
-          </div>
-
-          <div class="video-region">
-            <div class="short-video-wrapper">
-              <video
-                class="short-video"
-                src="../video/2.mp4"
-                playsinline
-                loop
-              ></video>
-
-              <div class="overlay-top-gradient"></div>
-
-              <button class="bias-banner">
-                <span class="bias-dot"></span>
-                <span class="bias-score">35%</span>
-              </button>
-            </div>
-          </div>
-        </section>
+          <div class="bubble-body" id="bubbleBody">No summary yet.</div>
+        </div>
       </div>
 
-      <div class="sound-hint" id="soundHint">
+      <!-- rail -->
+      <div class="rail">
+        <div class="slides" id="slides">
+          <!-- 1 -->
+          <section class="short-slide active" data-index="0" data-script="/scripts/1.txt">
+            <div class="short-video-wrapper">
+              <video class="short-video" src="/video/1.mp4" playsinline autoplay muted loop></video>
+              <button class="bias-banner" type="button">
+                <span class="bias-dot" aria-hidden="true"></span>
+                <span class="bias-score">--%</span>
+              </button>
+              <div class="hint">Swipe ↑ / ↓</div>
+            </div>
+          </section>
+          <!-- 2 -->
+          <section class="short-slide" data-index="1" data-script="/scripts/2.txt">
+            <div class="short-video-wrapper">
+              <video class="short-video" src="/video/2.mp4" playsinline muted loop></video>
+              <button class="bias-banner" type="button">
+                <span class="bias-dot" aria-hidden="true"></span>
+                <span class="bias-score">--%</span>
+              </button>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
+  </div>
 
-    <script>
-      const track = document.getElementById("shortsTrack");
-      const slides = Array.from(document.querySelectorAll(".short-slide"));
-      const videos = slides.map((s) => s.querySelector("video.short-video"));
-      const soundHint = document.getElementById("soundHint");
+<script>
+/* ========== core refs ========== */
+const phone = document.getElementById('iphone');
+const slidesRoot = document.getElementById('slides');
+const slides = Array.from(document.querySelectorAll('.short-slide'));
+let currentIndex = 0;
 
-      let currentIndex = 0;
+/* ========== slideshow ========== */
+function updateActiveSlide(){
+  slides.forEach((s,i)=>{
+    s.classList.toggle('active', i===currentIndex);
+    const v = s.querySelector('video.short-video');
+    if(!v) return;
+    if(i===currentIndex){ v.play().catch(()=>{}); }
+    else { v.pause(); v.currentTime=0; }
+  });
+}
+function goTo(index){
+  const next = Math.max(0, Math.min(index, slides.length-1));
+  if(next===currentIndex) return;
+  currentIndex = next;
+  updateActiveSlide();
+  // 바로 분석 시작 (퍼센트 갱신 + 캐시 저장)
+  analyzeForSlide(currentIndex).catch(()=>{});
+}
 
-      function updateSlidePosition() {
-        track.style.transform = `translateY(-${currentIndex * 100}%)`;
-      }
+/* ========== analysis wiring ========== */
+const ANALYZE_ENDPOINT = '/analyze'; // '/analyze-stub'로 바꾸면 배선 테스트 가능
+const analyzedCache = new Map();     // slideIndex -> { biasPercentage, reasoning }
+const analyzingInFlight = new Map(); // slideIndex -> Promise
+const bubble = document.getElementById('summaryBubble');
+const bubbleBody = document.getElementById('bubbleBody');
+const bubbleClose = document.getElementById('bubbleClose');
 
-      function playCurrentVideo() {
-        videos.forEach((v, i) => {
-          if (i === currentIndex) {
-            v.play().catch(() => {});
-          } else {
-            v.pause();
-            v.currentTime = 0;
-          }
-        });
-      }
+/* 말풍선: 받은 텍스트 그대로 표시 */
+function openBubbleVerbatim(text){
+  bubbleBody.textContent = typeof text === 'string' ? text : String(text ?? '');
+  bubble.classList.add('open');
+  phone.classList.add('bubble-open');
+}
+function closeBubble(){
+  bubble.classList.remove('open');
+  phone.classList.remove('bubble-open');
+}
+bubbleClose.addEventListener('click', closeBubble);
 
-      function goTo(index) {
-        if (index < 0 || index >= slides.length) return;
-        currentIndex = index;
-        updateSlidePosition();
-        playCurrentVideo();
-      }
+/* 서버 응답에서 reasoning 키를 그대로 꺼냄 */
+function extractReason(obj){
+  if (obj && typeof obj === 'object') {
+    if ('reasoning' in obj) return obj.reasoning;
+    if ('analysis' in obj)  return obj.analysis;
+    if ('reason' in obj)    return obj.reason;
+  }
+  if (typeof obj === 'string') return obj;
+  return '';
+}
 
-      window.addEventListener("load", () => {
-        updateSlidePosition();
-        playCurrentVideo();
-      });
+async function fetchText(url){
+  const r = await fetch(url, { cache:'no-store' });
+  if(!r.ok) throw new Error(`Failed to load: ${r.status} ${r.statusText}`);
+  return r.text();
+}
+async function callAnalyze(script){
+  const r = await fetch(ANALYZE_ENDPOINT,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({ script })
+  });
+  if(!r.ok) throw new Error(`Analyze API error: ${r.status} ${r.statusText}`);
+  return r.json(); // { biasPercentage, reasoning }
+}
+function paintBanner(slideIndex, bias){
+  const slide = slides[slideIndex];
+  const scoreEl = slide.querySelector('.bias-score');
+  const dot = slide.querySelector('.bias-dot');
+  const val = Math.round(Number(bias||0));
+  scoreEl.textContent = `${val}%`;
+  let c='var(--green)'; if(val>=70)c='var(--red)'; else if(val>=35)c='var(--yellow)';
+  dot.style.background=c; dot.style.boxShadow=`0 0 0 3px ${c}22`;
+}
 
-      // Swipe handling (based on frame)
-      let startY = 0;
-      let deltaY = 0;
-      let isDragging = false;
+/* 핵심: 분석을 Promise로 반환 → 호출측이 await 가능 */
+async function analyzeForSlide(slideIndex){
+  // 이미 캐시가 있으면 즉시 반영 + 반환
+  if (analyzedCache.has(slideIndex)) {
+    const cached = analyzedCache.get(slideIndex);
+    paintBanner(slideIndex, cached.biasPercentage);
+    return cached; // { biasPercentage, reasoning }
+  }
+  // 진행 중이면 그 Promise를 그대로 반환
+  if (analyzingInFlight.has(slideIndex)) {
+    return analyzingInFlight.get(slideIndex);
+  }
 
-      const frame = document.querySelector(".shorts-frame");
+  const slide = slides[slideIndex];
+  const scriptUrl = slide?.dataset?.script;
+  const scoreEl = slide?.querySelector?.('.bias-score');
+  if (scoreEl && scoreEl.textContent === '--%') scoreEl.textContent = '…';
 
-      frame.addEventListener("touchstart", (e) => {
-        if (e.touches.length !== 1) return;
-        startY = e.touches[0].clientY;
-        deltaY = 0;
-        isDragging = true;
-      });
+  const p = (async () => {
+    try{
+      const script = await fetchText(scriptUrl);
+      const data = await callAnalyze(script);
+      const bias = Number(data?.biasPercentage ?? 0);
+      const reason = extractReason(data); // 서버 텍스트 그대로
 
-      frame.addEventListener("touchmove", (e) => {
-        if (!isDragging) return;
-        const currentY = e.touches[0].clientY;
-        deltaY = currentY - startY;
-      });
+      const result = { biasPercentage:bias, reasoning:reason };
+      analyzedCache.set(slideIndex, result);
+      paintBanner(slideIndex, bias);
+      return result;
+    }catch(err){
+      console.error('Analysis failed:', err);
+      if (scoreEl) scoreEl.textContent = 'ERR';
+      const fallback = { biasPercentage:0, reasoning:'Failed to analyze.' };
+      analyzedCache.set(slideIndex, fallback);
+      return fallback;
+    }finally{
+      analyzingInFlight.delete(slideIndex);
+    }
+  })();
 
-      frame.addEventListener("touchend", () => {
-        if (!isDragging) return;
-        const threshold = 60;
-        if (deltaY < -threshold) {
-          goTo(currentIndex + 1);
-        } else if (deltaY > threshold) {
-          goTo(currentIndex - 1);
-        }
-        isDragging = false;
-        deltaY = 0;
-      });
+  analyzingInFlight.set(slideIndex, p);
+  return p;
+}
 
-      // Desktop wheel support
-      let wheelLocked = false;
-      frame.addEventListener("wheel", (e) => {
-        if (wheelLocked) return;
-        wheelLocked = true;
-        const threshold = 20;
-        if (e.deltaY > threshold) {
-          goTo(currentIndex + 1);
-        } else if (e.deltaY < -threshold) {
-          goTo(currentIndex - 1);
-        }
-        setTimeout(() => {
-          wheelLocked = false;
-        }, 400);
-      });
+/* 배너 클릭: 반드시 await로 결과를 받은 뒤 말풍선에 그대로 표시 */
+function wireBannerClicks(){
+  document.querySelectorAll('.bias-banner').forEach((btn)=>{
+    btn.addEventListener('click', async ()=>{
+      // 먼저 로딩 텍스트 보여주고
+      openBubbleVerbatim('Analyzing with AI…');
+      // 현재 인덱스 결과 확보
+      const res = await analyzeForSlide(currentIndex);
+      // 서버 텍스트 그대로 넣기
+      openBubbleVerbatim(res.reasoning);
+    });
+  });
+}
 
-      // Bias banner → open summary (frame stays fixed, only layout splits)
-      document.querySelectorAll(".bias-banner").forEach((btn, idx) => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          slides[idx].classList.add("summary-open");
-        });
-      });
+/* 재생 시작 → 1회 분석(배너 갱신용) */
+function wirePlayAutoAnalyze(){
+  document.querySelectorAll('video.short-video').forEach((video)=>{
+    const slide = video.closest('.short-slide');
+    const idx = Number(slide.dataset.index);
+    video.addEventListener('play', ()=> analyzeForSlide(idx).catch(()=>{}), { once:true });
+  });
+}
 
-      // Close summary
-      document.querySelectorAll(".summary-close").forEach((btn, idx) => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          slides[idx].classList.remove("summary-open");
-        });
-      });
+/* ========== swipe (distance + velocity) ========== */
+let dragStartY=0, dragging=false, lastY=0, lastT=0, velocityY=0;
+const DIST_THRESHOLD = 68;      // px
+const VELOCITY_THRESHOLD = 0.6; // px/ms
 
-      // First user interaction → enable sound
-      let soundEnabled = false;
-      function enableSound() {
-        if (soundEnabled) return;
-        soundEnabled = true;
-        videos.forEach((v) => {
-          v.muted = false;
-        });
-        playCurrentVideo();
-        if (soundHint) {
-          soundHint.classList.add("hidden");
-          setTimeout(() => {
-            soundHint.style.display = "none";
-          }, 300);
-        }
-        document.removeEventListener("click", enableSound);
-        document.removeEventListener("touchstart", enableSound);
-      }
+function startDrag(y){
+  dragStartY = y; lastY = y; lastT = performance.now(); velocityY = 0; dragging = true;
+  slidesRoot.classList.add('swiping'); slidesRoot.style.setProperty('--swipeY','0px');
+}
+function moveDrag(y){
+  if(!dragging) return;
+  const now = performance.now();
+  const dy = y - dragStartY;
+  slidesRoot.style.setProperty('--swipeY', `${dy}px`);
+  const dt = now - lastT;
+  if(dt>0){ velocityY = (y - lastY) / dt; lastY = y; lastT = now; }
+}
+function endDrag(y){
+  if(!dragging) return;
+  dragging = false;
+  const dy = y - dragStartY;
+  slidesRoot.classList.remove('swiping'); slidesRoot.style.setProperty('--swipeY', '0px');
 
-      document.addEventListener("click", enableSound);
-      document.addEventListener("touchstart", enableSound);
-    </script>
-  </body>
+  const isFlick = Math.abs(velocityY) > VELOCITY_THRESHOLD;
+  const enoughDist = Math.abs(dy) > DIST_THRESHOLD;
+  if(!(isFlick || enoughDist)) return;
+
+  if(dy < 0) goTo(currentIndex + 1); else goTo(currentIndex - 1);
+
+  const v = slides[currentIndex]?.querySelector('video.short-video');
+  v?.play?.().catch(()=>{});
+  analyzeForSlide(currentIndex).catch(()=>{});
+}
+
+/* touch */
+slidesRoot.addEventListener('touchstart', (e)=>{
+  if(!e.touches || e.touches.length!==1) return;
+  startDrag(e.touches[0].clientY);
+}, { passive:true });
+slidesRoot.addEventListener('touchmove', (e)=>{
+  if(!e.touches || e.touches.length!==1) return;
+  moveDrag(e.touches[0].clientY);
+}, { passive:true });
+slidesRoot.addEventListener('touchend', (e)=>{
+  const y = (e.changedTouches && e.changedTouches[0]?.clientY) || dragStartY;
+  endDrag(y);
+}, { passive:true });
+
+/* mouse/pen */
+slidesRoot.addEventListener('pointerdown', (e)=>{
+  if(e.pointerType==='mouse' || e.pointerType==='pen'){ startDrag(e.clientY); }
+});
+window.addEventListener('pointermove', (e)=>{ if(dragging) moveDrag(e.clientY); });
+window.addEventListener('pointerup',   (e)=>{ if(dragging) endDrag(e.clientY); });
+
+/* ========== init ========== */
+window.addEventListener('load', ()=>{
+  updateActiveSlide();
+  wirePlayAutoAnalyze();
+  wireBannerClicks();
+  analyzeForSlide(currentIndex).catch(()=>{}); // 첫 슬라이드 분석 시작
+});
+</script>
+</body>
 </html>
