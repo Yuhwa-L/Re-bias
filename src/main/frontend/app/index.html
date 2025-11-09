@@ -214,7 +214,23 @@
                     <div class="analytical-box history-box">
                         <div class="app-label"><i class="fab fa-youtube" style="color: red;"></i> Analytical <span class="app-note">YOUTUBE APP</span></div>
                         
-                        <img src="image_54091a.png" alt="Bias Trend Graph" class="history-graph"> 
+                        <div style="
+                            display: flex; 
+                            justify-content: center; 
+                            align-items: center; 
+                            height: 100px; 
+                            color: #777; 
+                            font-size: 16px; 
+                            font-weight: 500;
+                            margin-top: 20px; /* 이미지 위치에 맞춰 위아래 간격 조정 */
+                            margin-bottom: 20px;
+                            border: 1px dashed #ccc; /* 깔끔한 점선 테두리 추가 */
+                            border-radius: 10px; /* 모서리 둥글게 */
+                            background-color: #f9f9f9; /* 배경색 추가 */
+                        ">
+                            Analysis not yet complete
+                        </div>
+                        
                         <div class="time-filter-buttons">
                             <button>24H</button>
                             <button>3D</button>
@@ -234,48 +250,6 @@
                         <p>Trump's corporate tax cuts boosted business investment but also widened income gaps. A neutral view weighs both growth benefits and fiscal consequences.</p>
                     </div>
                     
-                    <div class="history-list-section">
-                        <h3 class="section-title">Video History</h3>
-                        <div class="video-list history-video-list">
-                            
-                            <div class="video-item history-item">
-                                <img src="KakaoTalk_20251108_103938405_03.png" alt="Video Thumbnail 1">
-                                <div class="info">
-                                    <div class="title">Socialism, explained | What is Socialism and how does it work?</div>
-                                    <div class="views">2 days ago • Bias: 51%</div>
-                                </div>
-                                <div class="re-bias-btn"><i class="fas fa-retweet"></i> Re-Bias</div>
-                            </div>
-                            
-                            <div class="video-item history-item">
-                                <img src="KakaoTalk_20251108_103938405_04.png" alt="Video Thumbnail 2">
-                                <div class="info">
-                                    <div class="title">Trump's policy: Make America Great Again - The economy focus</div>
-                                    <div class="views">5 days ago • Bias: 82%</div>
-                                </div>
-                                <div class="re-bias-btn"><i class="fas fa-retweet"></i> Re-Bias</div>
-                            </div>
-
-                            <div class="video-item history-item">
-                                <img src="image_53910a.png" alt="Video Thumbnail 3">
-                                <div class="info">
-                                    <div class="title">The hidden costs of corporate tax cuts on the middle class</div>
-                                    <div class="views">1 week ago • Bias: 63%</div>
-                                </div>
-                                <div class="re-bias-btn"><i class="fas fa-retweet"></i> Re-Bias</div>
-                            </div>
-
-                            <div class="video-item history-item">
-                                <img src="image_5390a5.png" alt="Video Thumbnail 4">
-                                <div class="info">
-                                    <div class="title">The US-China trade war: winners and losers explained</div>
-                                    <div class="views">1 month ago • Bias: 75%</div>
-                                </div>
-                                <div class="re-bias-btn"><i class="fas fa-retweet"></i> Re-Bias</div>
-                            </div>
-                            
-                        </div>
-                    </div>
                     </div>
             </section>
 
@@ -296,7 +270,7 @@
                     <h3>Algorithm Cleaning</h3>
                     <p class="cleaning-description" id="cleaning-status-text">
                         Our AI is optimizing your content feed by removing biased or repetitive patterns. 
-                        This helps your recommendation system stay balanced and fresh.
+                        It helps your recommendation system stay balanced and fresh.
                     </p>
                     
                     <button class="primary-btn clean-btn" id="clean-button" onclick="redirectToCleaningService()">
