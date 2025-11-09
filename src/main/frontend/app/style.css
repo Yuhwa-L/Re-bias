@@ -207,7 +207,8 @@ header {
 }
 /* 하단 내비게이션 아이템 간격 및 활성화 스타일 변경 */
 .bottom-nav .nav-item {
-    color: #888; 
+    /* 🌟 수정: 하단 아이콘 기본 색상을 흰색으로 변경 🌟 */
+    color: white; 
     font-size: 20px;
     text-decoration: none;
     display: flex;
@@ -311,11 +312,15 @@ header {
     display: inline-block;
     width: 8px;
     height: 8px;
-    background-color: #ccc;
+    /* 🌟 수정: 불이 안 들어온 점을 흰색으로 변경 🌟 */
+    background-color: #fff; 
     border-radius: 50%;
     margin: 0 4px;
 }
-.dot.active { background-color: #1a73e8; }
+.dot.active { 
+    /* 활성화된 점은 진한 파란색 유지 */
+    background-color: #1a73e8; 
+}
 .splash-page .next-btn { width: 60%; }
 
 /* B. ACCESS 스타일 */
@@ -443,7 +448,8 @@ input:checked + .slider:before { transform: translateX(20px); }
 .notification-item {
     display: flex;
     padding: 15px 10px;
-    border-bottom: 1px solid #B6CCD7; 
+    /* 배경색과 동일한 색으로 변경 */
+    border-bottom: 1px solid #C5D9E5; 
     align-items: center;
     cursor: pointer;
     /* 배경색 변경 */
@@ -451,7 +457,7 @@ input:checked + .slider:before { transform: translateX(20px); }
     transition: background-color 0.2s;
 }
 .notification-item.unread {
-    /* 읽지 않은 항목 배경색은 유지 또는 조정 가능 (여기서는 약간 더 밝은 색으로 유지) */
+    /* 읽지 않은 항목 배경색은 유지 또는 조정 가능 */
     background-color: #cce7ff; 
 }
 .notification-item:hover {
@@ -596,7 +602,6 @@ input:checked + .slider:before { transform: translateX(20px); }
     flex-direction: column;
     align-items: center;
     text-align: center;
-    /* padding-top: 5px; <- 통일성을 위해 제거됨 (page-header가 padding을 가짐) */
 }
 .cleaning-content {
     max-width: 300px;
@@ -613,9 +618,10 @@ input:checked + .slider:before { transform: translateX(20px); }
     margin: 0 auto 30px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
-/* 🌟 수정: 붓 아이콘 스타일 🌟 */
-.cleaning-icon-circle .fas.fa-brush {
-    font-size: 50px; 
+/* 🌟 최종 수정: 붓 아이콘 크기를 100px로, 색상은 #1a73e8로 설정했습니다. 🌟 */
+/* 💡 (주의: 이전의 잘못된 fa-brush 대신 fa-paint-brush로 선택자 수정) 💡 */
+.cleaning-icon-circle .fas.fa-paint-brush {
+    font-size: 100px; 
     color: #1a73e8; 
 }
 

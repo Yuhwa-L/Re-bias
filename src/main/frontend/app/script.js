@@ -1,3 +1,34 @@
+// Function to handle account setting actions
+function handleAccountAction(action) {
+    if (action === 'logout') {
+        alert('Logging out...');
+        goToPage('splash'); // Example: Go back to splash page on logout
+    } else {
+        alert(`Navigating to ${action} management page. (Not implemented)`);
+    }
+}
+
+// 🌟 NEW FUNCTION: Redirects to an external URL for algorithm cleaning 🌟
+function redirectToCleaningService() {
+    // 💡 Replace this with the actual URL of the external cleaning tool or guide
+    const externalUrl = 'https://www.example.com/algorithmic-cleaning-guide'; 
+    
+    // Open the external URL in a new browser tab/window
+    // Note: In a real mobile app environment (like Cordova/React Native), '_system' opens the external browser. 
+    // In a desktop browser, it typically opens a new tab.
+    window.open(externalUrl, '_blank'); 
+
+    // Optional: Provide instant feedback to the user before redirection
+    const button = document.getElementById('clean-button');
+    const originalText = button.textContent;
+    button.textContent = 'Opening External Service...';
+    
+    // Reset button text after a brief moment
+    setTimeout(() => {
+        button.textContent = originalText;
+    }, 1500); 
+}
+
 // Function to handle page navigation (simplified for example)
 function goToPage(pageId) {
     const pages = document.querySelectorAll('.app-page');
@@ -10,7 +41,7 @@ function goToPage(pageId) {
         targetPage.classList.add('active');
     }
     
-    // 네비게이션 버튼의 active 클래스 업데이트
+    // Update active class for navigation buttons
     const navItems = document.querySelectorAll('.bottom-nav .nav-item');
     navItems.forEach(item => {
         item.classList.remove('active');
@@ -19,39 +50,38 @@ function goToPage(pageId) {
         }
     });
 
-    // 🌟 동영상 페이지가 아닐 때 편향도 숨김 🌟
+    // 🌟 Hide bias indicator when not on the video content page 🌟
     if (pageId !== 'video-content') {
         toggleBiasIndicator(false);
     }
 }
 
-// 🌟 편향도 표시/숨김을 제어하는 핵심 함수 🌟
+// 🌟 Core function to control showing/hiding the bias indicator 🌟
 function toggleBiasIndicator(show) {
     const indicator = document.getElementById('bias-indicator');
     if (indicator) {
-        // 'show'가 true이면 'flex'로 설정하여 보이게 함
-        // 'show'가 false이면 'none'으로 설정하여 숨김
+        // Set to 'flex' (show) if 'show' is true, or 'none' (hide) if false
         indicator.style.display = show ? 'flex' : 'none';
     }
 }
 
-// 🌟 수정: 편향도 점수(biasScore) 인수를 추가하고 DOM에 값 적용 🌟
-// 동영상 페이지로 이동하는 함수 (동영상 분석 실행 시)
+// 🌟 Update: Added biasScore argument and apply value to the DOM 🌟
+// Function to navigate to the video page (assuming video analysis starts)
 function openVideoPage(videoUrl, biasScore) {
-    // 1. 동영상 분석이 시작되는 상황 가정: 편향도 표시 
+    // 1. Assume video analysis is starting: show the bias indicator 
     toggleBiasIndicator(true); 
 
-    // 🌟 2. 전달받은 편향도 점수를 왼쪽 상단 박스에 표시 🌟
+    // 🌟 2. Display the received bias score in the top-left box 🌟
     const biasPercentageElement = document.getElementById('bias-percentage');
     if (biasPercentageElement) {
         biasPercentageElement.textContent = biasScore;
     }
     
-    // 3. 실제 페이지 전환
+    // 3. Actual page transition
     goToPage('video-content');
 }
 
-// --- 기타 초기화 함수 ---
+// --- Other Initialization Functions ---
 function updateTime() {
     const timeElement = document.getElementById('current-time');
     const now = new Date();
@@ -60,12 +90,12 @@ function updateTime() {
     timeElement.textContent = `${hours}:${minutes}`;
 }
 
-// 앱 초기화 시 실행 (현재 시간 표시)
+// Run on app initialization (display current time)
 updateTime();
-setInterval(updateTime, 60000); // 1분마다 업데이트
+setInterval(updateTime, 60000); // Update every 1 minute
 
-// 앱 로드 시 편향도 박스를 기본으로 숨기기
+// Hide bias box by default when the app loads
 document.addEventListener('DOMContentLoaded', () => {
-    // 앱이 처음 로드될 때 편향도 표시기를 숨깁니다.
+    // Hide the bias indicator when the app first loads.
     toggleBiasIndicator(false);
 });
