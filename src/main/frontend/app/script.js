@@ -1,35 +1,33 @@
-// Function to handle account setting actions
+// 계정 설정 액션을 처리하는 함수
 function handleAccountAction(action) {
     if (action === 'logout') {
-        alert('Logging out...');
-        goToPage('splash'); // Example: Go back to splash page on logout
+        alert('로그아웃 중...');
+        goToPage('splash'); // 예시: 로그아웃 시 스플래시 페이지로 이동
     } else {
-        alert(`Navigating to ${action} management page. (Not implemented)`);
+        alert(`${action} 관리 페이지로 이동합니다. (미구현)`);
     }
 }
 
-// 🌟 NEW FUNCTION: Redirects to an external URL for algorithm cleaning 🌟
+// 🌟 새 함수: 알고리즘 정화 서비스를 위한 외부 URL로 리디렉션 🌟
 function redirectToCleaningService() {
-    // 💡 Replace this with the actual URL of the external cleaning tool or guide
+    // 💡 실제 외부 정화 도구 또는 가이드 URL로 대체하세요
     const externalUrl = 'https://www.example.com/algorithmic-cleaning-guide'; 
     
-    // Open the external URL in a new browser tab/window
-    // Note: In a real mobile app environment (like Cordova/React Native), '_system' opens the external browser. 
-    // In a desktop browser, it typically opens a new tab.
+    // 외부 URL을 새 브라우저 탭/창에서 엽니다
     window.open(externalUrl, '_blank'); 
 
-    // Optional: Provide instant feedback to the user before redirection
+    // 선택 사항: 리디렉션 전 사용자에게 즉각적인 피드백 제공
     const button = document.getElementById('clean-button');
     const originalText = button.textContent;
-    button.textContent = 'Opening External Service...';
+    button.textContent = '외부 서비스 열기 중...';
     
-    // Reset button text after a brief moment
+    // 잠시 후 버튼 텍스트를 원래대로 재설정
     setTimeout(() => {
         button.textContent = originalText;
     }, 1500); 
 }
 
-// 🌟 NEW FUNCTION: Updates the unread notification count on the bell icon 🌟
+// 🌟 새 함수: 알림 종 아이콘의 읽지 않은 알림 개수 업데이트 🌟
 function updateNotificationCount(count) {
     const ids = ['unread-notification-count', 'unread-notification-count-2', 'unread-notification-count-3'];
     
@@ -37,13 +35,13 @@ function updateNotificationCount(count) {
         const countElement = document.getElementById(id);
         if (countElement) {
             countElement.textContent = count > 99 ? '99+' : count;
-            // Display only if the count is greater than 0
+            // 개수가 0보다 클 경우에만 표시
             countElement.style.display = count > 0 ? 'flex' : 'none'; 
         }
     });
 }
 
-// Function to handle page navigation (simplified for example)
+// 페이지 이동을 처리하는 함수 (예시를 위해 단순화)
 function goToPage(pageId) {
     const pages = document.querySelectorAll('.app-page');
     pages.forEach(page => {
@@ -55,7 +53,7 @@ function goToPage(pageId) {
         targetPage.classList.add('active');
     }
 
-    // Handle bottom navigation active state
+    // 하단 탐색 표시줄의 활성화 상태 처리
     const navItems = document.querySelectorAll('.bottom-nav .nav-item');
     navItems.forEach(item => {
         item.classList.remove('active');
@@ -64,39 +62,52 @@ function goToPage(pageId) {
         }
     });
 
-    // 🌟 Notification logic: If navigating to the notification list, mark all as read (set count to 0) 🌟
+    // 🌟 핵심 수정: 비디오 재생 화면이 아닐 경우 편향도 표시기 숨기기 🌟
+    if (pageId === 'video-content') {
+        // 'video-content' 페이지일 경우 openVideoPage에서 활성화함
+    } else {
+        // 그 외 모든 페이지로 이동할 경우 비활성화
+        toggleBiasIndicator(false);
+    }
+    
+    // 알림 로직: 알림 목록으로 이동할 경우 모두 읽음 처리 (개수 0으로 설정)
     if (pageId === 'notification-list') {
         updateNotificationCount(0);
-        // You would typically also update the display of the items inside the notification list here
     }
 }
 
-// Function to toggle the visibility of the bias percentage indicator
+// 편향도 비율 표시기의 가시성을 토글하는 함수
 function toggleBiasIndicator(show) {
     const indicator = document.getElementById('bias-indicator');
     if (indicator) {
-        // Set to 'flex' (show) if 'show' is true, or 'none' (hide) if false
+        // 'show'가 true이면 'flex' (표시), false이면 'none' (숨김)으로 설정
         indicator.style.display = show ? 'flex' : 'none';
     }
 }
 
-// 🌟 Update: Added biasScore argument and apply value to the DOM 🌟
-// Function to navigate to the video page (assuming video analysis starts)
-function openVideoPage(videoUrl, biasScore) {
-    // 1. Assume video analysis is starting: show the bias indicator 
+// 🌟 핵심 수정: thumbnailUrl 인수를 받아 video-player-image에 적용 🌟
+// 비디오 페이지로 이동하는 함수 (비디오 분석이 시작된다고 가정)
+function openVideoPage(videoUrl, biasScore, thumbnailUrl) {
+    // 1. 비디오 분석이 시작된다고 가정: 편향도 표시기 표시 
     toggleBiasIndicator(true); 
 
-    // 🌟 2. Display the received bias score in the top-left box 🌟
+    // 2. 받은 편향도 점수를 왼쪽 상단 박스에 표시 
     const biasPercentageElement = document.getElementById('bias-percentage');
     if (biasPercentageElement) {
         biasPercentageElement.textContent = biasScore;
     }
     
-    // 3. Actual page transition
+    // 🌟 3. 비디오 플레이어 이미지 업데이트 (썸네일을 플레이어 화면에 표시) 🌟
+    const videoImageElement = document.getElementById('video-player-image');
+    if (videoImageElement && thumbnailUrl) {
+        videoImageElement.src = thumbnailUrl;
+    }
+    
+    // 4. 실제 페이지 전환
     goToPage('video-content');
 }
 
-// --- Other Initialization Functions ---
+// --- 기타 초기화 함수 ---
 function updateTime() {
     const timeElement = document.getElementById('current-time');
     const now = new Date();
@@ -105,12 +116,12 @@ function updateTime() {
     timeElement.textContent = `${hours}:${minutes}`;
 }
 
-// Run on app initialization (display current time)
+// 앱 초기화 시 실행 (현재 시간 표시)
 updateTime();
-setInterval(updateTime, 60000); // Update every 1 minute
+setInterval(updateTime, 60000); // 1분마다 업데이트
 
-// Hide bias indicator on initialization (default state)
+// 초기화 시 편향도 표시기 숨기기 (기본 상태)
 toggleBiasIndicator(false); 
 
-// 🌟 Initialization: Set initial unread notification count 🌟
+// 🌟 초기화: 읽지 않은 알림 개수 설정 🌟
 updateNotificationCount(3);
