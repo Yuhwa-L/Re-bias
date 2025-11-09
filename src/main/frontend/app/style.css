@@ -1,12 +1,12 @@
-/* 🌟 폰트 수정: 둥글둥글한 느낌의 'Quicksand' 폰트 임포트 🌟 */
+/* 🌟 Font correction: Import the round 'Quicksand' font 🌟 */
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
-/* Font Awesome 아이콘 라이브러리 추가 */
+/* Add Font Awesome icon library */
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
 
-/* 폰트 설정 및 배경 */
+/* Font settings and background */
 body {
     font-family: 'Quicksand', sans-serif; 
-    /* 배경색 변경 */
+    /* Change background color */
     background-color: #B6CCD7; 
     display: flex;
     justify-content: center;
@@ -15,11 +15,11 @@ body {
     margin: 0;
 }
 
-/* 폰 프레임 (아이폰 그리드 사이즈) */
+/* Phone frame (iPhone grid size) */
 .phone-frame {
     width: 375px; 
     height: 812px; 
-    /* 배경색 변경 */
+    /* Change background color */
     background-color: #B6CCD7; 
     border-radius: 40px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
@@ -29,9 +29,9 @@ body {
     flex-direction: column;
 }
 
-/* -------------------- 공통 스타일 (헤더, 내비게이션, 버튼) -------------------- */
+/* -------------------- Common Styles (Header, Navigation, Buttons) -------------------- */
 header {
-    /* 배경색 변경 */
+    /* Change background color */
     background-color: #B6CCD7; 
     padding: 10px 20px; 
     display: flex;
@@ -54,12 +54,12 @@ header {
 .time { 
     font-size: 18px; 
     font-weight: 500; 
-    /* 최종 수정 반영: 시간을 총 4px 위로 이동 */
+    /* Final correction: Move time 4px up */
     margin-top: -4px; 
 }
 
 .bias-percentage-box {
-    /* 🌟 수정: 기본적으로 숨김 처리 🌟 */
+    /* 🌟 Correction: Hide by default 🌟 */
     display: none;
 
     color: black; 
@@ -75,7 +75,7 @@ header {
     align-items: center;
     justify-content: center;
     min-width: 20px; 
-    /* 수정: 편향도 박스를 위로 3px 이동 */
+    /* Correction: Move bias box 3px up */
     margin-top: -3px; 
 }
 
@@ -98,7 +98,7 @@ header {
     flex-grow: 1;
     overflow: hidden; 
     position: relative;
-    /* 배경색 변경 */
+    /* Change background color */
     background-color: #B6CCD7; 
 }
 
@@ -142,16 +142,16 @@ header {
     cursor: pointer; 
 }
 
-/* 🌟 핵심 스타일: 중앙 정렬 및 타이틀 역할 수행 (CLEANING, HISTORY 페이지용) 🌟 */
+/* 🌟 Key Style: Center alignment and title function (for CLEANING, HISTORY pages) 🌟 */
 .page-title-spacer {
-    /* 텍스트 스타일 */
+    /* Text style */
     text-align: center;
     font-size: 20px;
     font-weight: bold;
     color: #333;
-    /* Flex 아이템 속성 */
-    flex-grow: 1; /* 남은 공간을 채워 좌우 아이콘을 밀어냄 */
-    margin: 0 10px; /* 좌우 아이콘과의 간격 */
+    /* Flex item properties */
+    flex-grow: 1; /* Fills remaining space, pushing side icons */
+    margin: 0 10px; /* Spacing from side icons */
 }
 
 .notification-icon {
@@ -200,14 +200,14 @@ header {
 .bottom-nav {
     display: flex;
     justify-content: center; 
-    /* 배경색 변경 */
+    /* Change background color */
     background-color: #B6CCD7; 
     padding: 15px 0 30px 0; 
     border-top: none; 
 }
-/* 하단 내비게이션 아이템 간격 및 활성화 스타일 변경 */
+/* Bottom navigation item spacing and active style correction */
 .bottom-nav .nav-item {
-    /* 🌟 수정: 하단 아이콘 기본 색상을 흰색으로 변경 🌟 */
+    /* 🌟 Correction: Change default bottom icon color to white 🌟 */
     color: white; 
     font-size: 20px;
     text-decoration: none;
@@ -217,7 +217,7 @@ header {
     width: 50px; 
     height: 50px;
     border-radius: 50%;
-    /* 🌟 내비게이션 아이템 간격 수정 🌟 */
+    /* 🌟 Correction: Adjust navigation item spacing 🌟 */
     margin: 0 10px; 
     transition: background-color 0.3s, color 0.3s;
 }
@@ -227,14 +227,14 @@ header {
     color: white; 
 }
 
-/* -------------------- G. SETTINGS PAGE 스타일 -------------------- */
+/* -------------------- G. SETTINGS PAGE STYLES -------------------- */
 .settings-page {
     padding-top: 5px;
     overflow-y: hidden; 
 }
 .settings-content {
     margin-top: 10px; 
-    /* 배경색 변경 */
+    /* Change background color */
     background-color: #B6CCD7;
 }
 .setting-group-title {
@@ -282,7 +282,7 @@ header {
 }
 
 
-/* A. 스플래시 스타일 */
+/* A. SPLASH STYLES */
 .splash-page {
     display: flex;
     justify-content: center;
@@ -297,13 +297,13 @@ header {
     height: 100%;
     padding-bottom: 50px; 
 }
-/* 🌟 최종 수정 반영: 스플래시 페이지 h1 글씨색을 흰색으로 변경 🌟 */
+/* 🌟 Final correction: Change splash page h1 font color to white 🌟 */
 .splash-page h1 { font-size: 24px; font-weight: bold; color: white; margin-bottom: 5px; }
-/* 🌟 최종 수정 반영: 스플래시 페이지 h2 글씨색을 흰색으로 변경 🌟 */
+/* 🌟 Final correction: Change splash page h2 font color to white 🌟 */
 .splash-page h2 { font-size: 16px; font-weight: normal; color: white; margin-bottom: 30px; }
 
 .dot-indicators { 
-    /* 최종 수정 반영: 페이지 인디케이터 중앙 정렬 */
+    /* Final correction: Center page indicators */
     display: flex;
     justify-content: center;
     margin: 0 auto 30px; 
@@ -312,18 +312,18 @@ header {
     display: inline-block;
     width: 8px;
     height: 8px;
-    /* 🌟 수정: 불이 안 들어온 점을 흰색으로 변경 🌟 */
+    /* 🌟 Correction: Change inactive dot color to white 🌟 */
     background-color: #fff; 
     border-radius: 50%;
     margin: 0 4px;
 }
 .dot.active { 
-    /* 활성화된 점은 진한 파란색 유지 */
+    /* Keep active dot deep blue */
     background-color: #1a73e8; 
 }
 .splash-page .next-btn { width: 60%; }
 
-/* B. ACCESS 스타일 */
+/* B. ACCESS STYLES */
 .access-page {
     padding-top: 40px;
 }
@@ -341,7 +341,7 @@ header {
 .access-item .icon-text { font-size: 16px; font-weight: 500; }
 .access-item .fab { font-size: 20px; margin-right: 10px; width: 25px; text-align: center; }
 
-/* Switch Toggle (토글 버튼 스타일) */
+/* Switch Toggle Style */
 .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
 .switch input { opacity: 0; width: 0; height: 0; }
 .slider {
@@ -358,7 +358,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 .slider.round:before { border-radius: 50%; }
 .access-page .bottom-dots { margin-top: 50px; }
 
-/* C. NOTIFICATION SETTING 스타일 */
+/* C. NOTIFICATION SETTING STYLES */
 .notification-page {
     display: flex;
     flex-direction: column;
@@ -386,20 +386,37 @@ input:checked + .slider:before { transform: translateX(20px); }
 .notification-page p { color: #555; font-size: 13px; }
 
 
-/* D. VIDEO LIST 스타일 */
+/* D. VIDEO LIST STYLES */
 .video-list-page {
     overflow-y: auto; 
 }
+/* 🌟 Change menu/notification icons to white as requested 🌟 */
+/* 🌟 Extend to include History and Cleaning page icons (Guaranteed White) 🌟 */
+.video-list-page .page-header .menu-icon,
+.video-list-page .page-header .notification-icon .fas,
+/* History 및 Cleaning 페이지의 '뒤로가기 화살표'와 '알림 종 아이콘' */
+.history-page .page-header .back-icon, 
+.history-page .page-header .notification-icon .fas, 
+.cleaning-page .page-header .back-icon, 
+.cleaning-page .page-header .notification-icon .fas,
+/* Settings 페이지의 'X' 메뉴 아이콘도 포함 */
+.settings-page .page-header .menu-icon
+{
+    color: white !important; /* <--- !important 추가로 우선순위 확보 */
+    text-shadow: 0 0 3px rgba(0,0,0,0.3); 
+}
+
+
 .video-list-content {
     padding-top: 5px; 
     padding-bottom: 100px; 
 }
 .video-item {
     display: flex;
-    /* 수정: 세로 중앙 정렬 */
+    /* Correction: Vertical center alignment */
     align-items: center; 
     padding: 15px 0;
-    /* 수정: 구분선 색깔 변경 (세련되게) */
+    /* Correction: Change divider color (more refined) */
     border-bottom: 1px solid #C5D9E5; 
     cursor: pointer;
 }
@@ -407,7 +424,7 @@ input:checked + .slider:before { transform: translateX(20px); }
     width: 100px;
     height: 70px;
     object-fit: cover;
-    /* 수정: 모서리 둥글게 처리 */
+    /* Correction: Round corners */
     border-radius: 10px;
     margin-right: 15px;
     flex-shrink: 0;
@@ -427,7 +444,7 @@ input:checked + .slider:before { transform: translateX(20px); }
     color: #777;
 }
 .video-item .bias-score {
-    /* 수정: 폰트 크기 조정 (중앙 정렬과 조화) */
+    /* Correction: Adjust font size (to harmonize with center alignment) */
     font-size: 16px; 
     font-weight: bold;
     margin-left: 10px;
@@ -435,10 +452,10 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 
-/* E. NOTIFICATION LIST 스타일 */
+/* E. NOTIFICATION LIST STYLES */
 .notification-list-page {
     padding-top: 5px;
-    /* 배경색 변경 */
+    /* Change background color */
     background-color: #B6CCD7; 
     overflow-y: auto; 
 }
@@ -448,16 +465,16 @@ input:checked + .slider:before { transform: translateX(20px); }
 .notification-item {
     display: flex;
     padding: 15px 10px;
-    /* 배경색과 동일한 색으로 변경 */
+    /* Change to the same color as the background */
     border-bottom: 1px solid #C5D9E5; 
     align-items: center;
     cursor: pointer;
-    /* 배경색 변경 */
+    /* Change background color */
     background-color: #B6CCD7; 
     transition: background-color 0.2s;
 }
 .notification-item.unread {
-    /* 읽지 않은 항목 배경색은 유지 또는 조정 가능 */
+    /* Unread item background color can be maintained or adjusted */
     background-color: #cce7ff; 
 }
 .notification-item:hover {
@@ -488,7 +505,7 @@ input:checked + .slider:before { transform: translateX(20px); }
     color: #777;
 }
 
-/* -------------------- H. HISTORY PAGE 스타일 -------------------- */
+/* -------------------- H. HISTORY PAGE STYLES -------------------- */
 .history-page {
     overflow-y: auto;
     padding-top: 5px;
@@ -496,11 +513,11 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .history-content {
     padding-top: 10px;
-    padding-bottom: 100px; /* 하단바를 위한 여백 */
+    padding-bottom: 100px; /* Padding for the bottom navigation bar */
 }
 
 .history-box {
-    background-color: white; /* 박스 배경색은 흰색 유지 (이미지가 배경을 가림) */
+    background-color: white; /* Keep box background white (image covers background) */
     padding: 15px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -509,72 +526,71 @@ input:checked + .slider:before { transform: translateX(20px); }
 
 .analytical-box {
     text-align: center;
-    /* 🌟 추가/수정: Analytical 박스 안쪽 여백 조정 (이미지에 맞춰서) 🌟 */
+    /* 🌟 Add/Correct: Adjust Analytical box inner padding (to match image) 🌟 */
     padding-top: 20px; 
     padding-bottom: 5px; 
 }
 .app-label {
     text-align: left;
-    /* 🌟 수정: 폰트 사이즈 키우고, 볼드하게 🌟 */
+    /* 🌟 Correction: Increase font size and bold 🌟 */
     font-size: 16px; 
     font-weight: bold; 
     color: #333;
     margin-bottom: 10px;
-    /* 🌟 추가: 왼쪽 아이콘과 텍스트 간격 조정 🌟 */
+    /* 🌟 Add: Adjust space between left icon and text 🌟 */
     display: flex;
     align-items: center;
-    padding-left: 5px; /* 박스 왼쪽 여백 조정 */
+    padding-left: 5px; /* Adjust box left padding */
 }
 .app-label .fab {
-    font-size: 22px; /* 유튜브 아이콘 크기 키움 */
+    font-size: 22px; /* Increase YouTube icon size */
     margin-right: 8px;
 }
 .app-label .app-note {
-    font-size: 12px; /* APP NOTE 크기 키움 */
+    font-size: 12px; /* Increase APP NOTE size */
     color: #777;
     margin-left: 5px;
-    font-weight: normal; /* 볼드 해제 */
+    font-weight: normal; /* Remove bold */
 }
+/* .history-graph style is no longer used, but remains for potential reuse. */
 .history-graph {
     width: 100%;
     height: auto;
     border-radius: 10px;
-    /* 🌟 수정: 그래프와 버튼 사이 간격 조정 🌟 */
     margin-bottom: 10px; 
-    /* 이미지 자체에 배경이 있으므로 투명도 없이 선명하게 표시 */
     opacity: 1; 
-    /* 🌟 추가: 이미지 위 아래 여백 조정 🌟 */
     margin-top: 10px; 
 }
 
+
 .time-filter-buttons {
-    margin-top: 10px; /* 🌟 수정: 그래프 아래 버튼 그룹 간격 조정 🌟 */
+    margin-top: 10px; /* 🌟 Correction: Adjust button group spacing below graph 🌟 */
     display: flex;
     justify-content: center;
-    gap: 8px; /* 버튼 간격 조정 */
+    gap: 8px; /* Adjust button spacing */
 }
 .time-filter-buttons button {
     background-color: #f0f0f0;
     color: #555;
     border: none;
     padding: 8px 12px;
-    margin: 0; /* flex gap으로 간격 조정되므로 margin 0으로 설정 */
+    margin: 0; /* Spacing adjusted by flex gap, set margin to 0 */
     border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s, color 0.2s;
-    min-width: 50px; /* 버튼 최소 너비 설정 (이미지 참고) */
+    min-width: 50px; /* Set minimum button width (refer to image) */
 }
 .time-filter-buttons button.active {
-    background-color: #6C63FF; /* 🌟 이미지와 동일한 보라색 계열로 변경 🌟 */
+    background-color: #6C63FF; /* 🌟 Change to purple hue similar to image 🌟 */
     color: white;
 }
 .time-filter-buttons button:hover {
     background-color: #ddd;
 }
 .time-filter-buttons button.active:hover {
-    background-color: #5a54d6; /* 활성 버튼 호버 색상 */
+    background-color: #5a54d6; /* Active button hover color */
 }
 
 
@@ -590,13 +606,13 @@ input:checked + .slider:before { transform: translateX(20px); }
     color: #333;
     margin: 0;
 }
-/* 박스 색상 지정 (이미지 5 참고) */
-/* 🌟 수정: blue-bg, pink-bg 색상 이미지와 유사하게 조정 🌟 */
-.blue-bg { background-color: #E6F7FF; border-left: 5px solid #0096C7; } /* 좀 더 밝은 파랑 */
-.pink-bg { background-color: #FFF0F5; border-left: 5px solid #FF6B81; } /* 좀 더 밝은 핑크 */
+/* Specify box color (refer to image 5) */
+/* 🌟 Correction: Adjust blue-bg, pink-bg colors to be similar to image 🌟 */
+.blue-bg { background-color: #E6F7FF; border-left: 5px solid #0096C7; } /* Lighter blue */
+.pink-bg { background-color: #FFF0F5; border-left: 5px solid #FF6B81; } /* Lighter pink */
 
 
-/* -------------------- I. CLEANING PAGE 스타일 -------------------- */
+/* -------------------- I. CLEANING PAGE STYLES -------------------- */
 .cleaning-page {
     display: flex;
     flex-direction: column;
@@ -618,8 +634,8 @@ input:checked + .slider:before { transform: translateX(20px); }
     margin: 0 auto 30px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
-/* 🌟 최종 수정: 붓 아이콘 크기를 100px로, 색상은 #1a73e8로 설정했습니다. 🌟 */
-/* 💡 (주의: 이전의 잘못된 fa-brush 대신 fa-paint-brush로 선택자 수정) 💡 */
+/* 🌟 Final correction: Set brush icon size to 100px and color to #1a73e8. 🌟 */
+/* 💡 (Note: Selector corrected to fa-paint-brush instead of the previous incorrect fa-brush) 💡 */
 .cleaning-icon-circle .fas.fa-paint-brush {
     font-size: 100px; 
     color: #1a73e8; 
@@ -643,10 +659,10 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 
-/* -------------------- J. VIDEO PAGE (Full Screen) 스타일 -------------------- */
+/* -------------------- J. VIDEO PAGE (Full Screen) STYLES -------------------- */
 .video-page {
-    padding: 0; /* 전체 화면 사용 */
-    background-color: black; /* 영상 플레이어 배경색 */
+    padding: 0; /* Use full screen */
+    background-color: black; /* Video player background color */
     display: flex;
     flex-direction: column;
 }
@@ -658,11 +674,11 @@ input:checked + .slider:before { transform: translateX(20px); }
     right: 0;
     z-index: 10;
     padding: 10px 20px;
-    color: white; /* 헤더 아이콘 흰색 */
+    color: white; /* Header icon white */
 }
 .video-page .back-icon, .video-page .menu-icon {
     color: white;
-    /* 아이콘을 좀 더 눈에 띄게 그림자 추가 */
+    /* Add shadow to make icons more prominent */
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); 
 }
 .video-player-content {
