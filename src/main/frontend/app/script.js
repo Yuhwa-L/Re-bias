@@ -29,6 +29,20 @@ function redirectToCleaningService() {
     }, 1500); 
 }
 
+// 🌟 NEW FUNCTION: Updates the unread notification count on the bell icon 🌟
+function updateNotificationCount(count) {
+    const ids = ['unread-notification-count', 'unread-notification-count-2', 'unread-notification-count-3'];
+    
+    ids.forEach(id => {
+        const countElement = document.getElementById(id);
+        if (countElement) {
+            countElement.textContent = count > 99 ? '99+' : count;
+            // Display only if the count is greater than 0
+            countElement.style.display = count > 0 ? 'flex' : 'none'; 
+        }
+    });
+}
+
 // Function to handle page navigation (simplified for example)
 function goToPage(pageId) {
     const pages = document.querySelectorAll('.app-page');
@@ -36,12 +50,12 @@ function goToPage(pageId) {
         page.classList.remove('active');
     });
 
-    const targetPage = document.querySelector(`.app-page[data-page="${pageId}"]`);
+    const targetPage = document.querySelector(`[data-page="${pageId}"]`);
     if (targetPage) {
         targetPage.classList.add('active');
     }
-    
-    // Update active class for navigation buttons
+
+    // Handle bottom navigation active state
     const navItems = document.querySelectorAll('.bottom-nav .nav-item');
     navItems.forEach(item => {
         item.classList.remove('active');
@@ -50,13 +64,14 @@ function goToPage(pageId) {
         }
     });
 
-    // 🌟 Hide bias indicator when not on the video content page 🌟
-    if (pageId !== 'video-content') {
-        toggleBiasIndicator(false);
+    // 🌟 Notification logic: If navigating to the notification list, mark all as read (set count to 0) 🌟
+    if (pageId === 'notification-list') {
+        updateNotificationCount(0);
+        // You would typically also update the display of the items inside the notification list here
     }
 }
 
-// 🌟 Core function to control showing/hiding the bias indicator 🌟
+// Function to toggle the visibility of the bias percentage indicator
 function toggleBiasIndicator(show) {
     const indicator = document.getElementById('bias-indicator');
     if (indicator) {
@@ -94,8 +109,8 @@ function updateTime() {
 updateTime();
 setInterval(updateTime, 60000); // Update every 1 minute
 
-// Hide bias box by default when the app loads
-document.addEventListener('DOMContentLoaded', () => {
-    // Hide the bias indicator when the app first loads.
-    toggleBiasIndicator(false);
-});
+// Hide bias indicator on initialization (default state)
+toggleBiasIndicator(false); 
+
+// 🌟 Initialization: Set initial unread notification count 🌟
+updateNotificationCount(3);
