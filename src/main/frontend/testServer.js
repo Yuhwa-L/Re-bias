@@ -15,7 +15,7 @@ app.use(express.static(__dirname)); // serve /youtubeShorts.html, /video, /scrip
 
 // Default: open the demo page
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'youtubeShorts.html'));
+  res.sendFile(path.join(__dirname, 'test.html'));
 });
 
 // Health check
@@ -82,5 +82,5 @@ app.post('/analyze', async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
-  console.log('Open http://localhost:3000/youtubeShorts.html');
+  console.log('Open http://localhost:3000/test.html');
 });
